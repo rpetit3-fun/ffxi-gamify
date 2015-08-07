@@ -1,0 +1,43 @@
+{% load staticfiles %}
+{% load bootstrap3 %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- CSS -->
+    {% bootstrap_css %}
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:regular,bold&subset=Latin">
+    {% block css %}{% endblock %}
+    <title>{% block title %}DarkStar Tools{% endblock %}</title>
+    <link rel="shortcut icon" href="{% static "img/favicon.ico" %}" />
+</head>
+
+<body>
+    <!-- Top Bar -->
+    {% include 'base_navbar.html' %}
+    <!-- End Top Bar -->
+
+    <!-- Main Content-->
+    <div class="container fix-navbar">
+        {% block container %}{% endblock %}
+    <!-- End Main Content-->
+
+    <!-- Footer -->
+    <footer class="row">
+        <div>
+            <hr />
+            <div class="copyright"></div>
+        </div>
+    </footer>
+    <!-- End Footer -->
+    </div>
+
+    <!-- Javascipt -->
+    <script type="text/javascript" src="{% static 'static_jquery/js/jquery.js' %}" />
+    {% bootstrap_javascript %}
+
+    {% block js %}
+    {% endblock %}
+    <!-- End Javascript -->
+
+</body>
+</html>

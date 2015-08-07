@@ -1,0 +1,33 @@
+{% block navbar %}
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">
+                DarkStar Tools
+            </a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <!-- Left Nav Section -->
+            <ul class="nav navbar-nav">
+                <li><a href="/">A</a></li>
+                <li><a href="/">C</a></li>
+                <li><a href="/">D</a></li>
+                <li><a href="/">E</a></li>
+            </ul>
+            <!-- Right Nav Section -->
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a data-toggle="tooltip" data-placement="bottom"
+                       title="Sign In" href="/accounts/login/">
+                        <span class="glyphicon glyphicon-log-in"></span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
