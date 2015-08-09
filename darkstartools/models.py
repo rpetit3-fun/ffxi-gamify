@@ -46,7 +46,7 @@ class AbilitiesCharges(models.Model):
     class Meta:
         managed = False
         db_table = 'abilities_charges'
-        unique_together = (('recastId', 'job', 'level'),)
+        unique_together = (('recastid', 'job', 'level'),)
 
 
 class Accounts(models.Model):
@@ -221,7 +221,7 @@ class BlueSpellMods(models.Model):
     class Meta:
         managed = False
         db_table = 'blue_spell_mods'
-        unique_together = (('spellId', 'modid'),)
+        unique_together = (('spellid', 'modid'),)
 
 
 class BlueTraits(models.Model):
@@ -513,14 +513,14 @@ class CharProfile(models.Model):
 
 class CharRecast(models.Model):
     charid = models.IntegerField()
-    id = models.SmallIntegerField()
+    recast_id = models.SmallIntegerField()
     time = models.IntegerField()
     recast = models.SmallIntegerField()
 
     class Meta:
         managed = False
         db_table = 'char_recast'
-        unique_together = (('charid', 'id'),)
+        unique_together = (('charid', 'recast_id'),)
 
 
 class CharSkills(models.Model):
@@ -828,12 +828,12 @@ class Guilds(models.Model):
 
 class InstanceEntities(models.Model):
     instanceid = models.IntegerField()
-    id = models.IntegerField()
+    entity_id = models.IntegerField()
 
     class Meta:
         managed = False
         db_table = 'instance_entities'
-        unique_together = (('instanceid', 'id'),)
+        unique_together = (('instanceid', 'entity_id'),)
 
 
 class InstanceList(models.Model):
@@ -907,7 +907,7 @@ class ItemLatents(models.Model):
     class Meta:
         managed = False
         db_table = 'item_latents'
-        unique_together = (('itemId', 'modId', 'value', 'latentId', 'latentParam'),)
+        unique_together = (('itemid', 'modid', 'value', 'latentid', 'latentparam'),)
 
 
 class ItemMods(models.Model):
@@ -918,7 +918,7 @@ class ItemMods(models.Model):
     class Meta:
         managed = False
         db_table = 'item_mods'
-        unique_together = (('itemId', 'modId'),)
+        unique_together = (('itemid', 'modid'),)
 
 
 class ItemModsPet(models.Model):
@@ -929,7 +929,7 @@ class ItemModsPet(models.Model):
     class Meta:
         managed = False
         db_table = 'item_mods_pet'
-        unique_together = (('itemId', 'modId'),)
+        unique_together = (('itemid', 'modid'),)
 
 
 class ItemPuppet(models.Model):
