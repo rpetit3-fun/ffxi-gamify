@@ -123,3 +123,26 @@ SUIT_CONFIG = {
         {'app': 'darkstartools', 'models': {'Abilities'}}
     )
 }
+
+'''-----------------------------------------------------------------------------
+Database 
+https://docs.djangoproject.com/en/1.8/ref/settings/#databases
+-----------------------------------------------------------------------------'''
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', 
+        'NAME': 'darkstar',
+        'USER': 'darkstar',
+        'PASSWORD': 'darkstar',
+        'HOST': 'localhost',
+        'PORT': '',
+    },
+    'darkstar': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'dspdb',
+        'USER': 'darkstar',
+        'PASSWORD': 'darkstar',
+        'HOST': 'localhost',
+        'PORT': '3306',
+    }
+}
