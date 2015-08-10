@@ -1,0 +1,50 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static "/static/css/bootstrap.min.css" %}">
+    <link rel="stylesheet" href="{% static "/static/css/bootstrap-theme.min.css" %}">
+    <link rel="stylesheet" href="{% static "/static/css/whhg.css" %}">
+    <link rel="stylesheet" href="{% static "/static/css/ffxi.css" %}">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:regular,bold&subset=Latin">
+    {% block css %}{% endblock %}
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="shortcut icon" href="{% static "img/favicon.ico" %}" />
+</head>
+
+<body>
+    <div class="container">
+        <!-- Top Bar -->
+        {% include 'base_navbar.html' %}
+        <!-- End Top Bar -->
+        
+         <!-- Main Content-->
+        {% block container %}{% endblock %}
+        <!-- End Main Content-->
+    
+        <!-- Footer -->
+        <footer class="row text-center">
+            <div>
+                <hr />
+                <div class="copyright">
+                    Copyright &#169; 2012-2014 FFXI-Gamify. 
+                    All rights reserved. 
+                    {% block courtesy %}{% endblock %}
+                </div>
+            </div>
+        </footer>
+        <!-- End Footer -->
+    </div>
+
+    <!-- Javascipt -->
+    <script src="{% static "/static/js/jquery-2.1.4.min.js" %}"></script>
+    <script src="{% static "/static/js/bootstrap.min.js" %}"></script>
+
+    {% block js %}
+    {% endblock %}
+    <!-- End Javascript -->
+
+</body>
+</html>

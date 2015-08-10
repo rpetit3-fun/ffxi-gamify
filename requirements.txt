@@ -3,3 +3,7 @@ django-bootstrap3
 django-static-jquery==2.1.4
 django-suit==0.2.13
 django==1.8
+psycopg2==2.6
+django-registration-redux
+django-crispy-forms-ng==2.0.0
+django-email-changer==0.1.2

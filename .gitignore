@@ -2,3 +2,4 @@
 *.DS_Store
 \#*
 *~
+ffxi/private.py

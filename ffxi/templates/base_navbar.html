@@ -4,6 +4,7 @@
 {% url 'quests' as quests %}
 {% url 'rewards' as rewards %}
 {% load navbar %}
+{% load staticfiles %}
 
 {% block navbar %}
     <div class="page-header">
@@ -21,6 +22,10 @@
             <li><a href="/accounts/login/">Login</a></li>
         {% endif %}
         </ul>
-        <h2 class="text-muted"><a href="/">FitBucks</a></h2>
+        <h2 class="text-muted">
+            <a href="/">
+                <img src="{% static "/static/img/ffxi-logo.gif" %}" style="width:276px;height:63px;">
+            </a>
+        </h2>
     </div>
 {% endblock %}

@@ -12,25 +12,17 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-
+from ffxi.private import *
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '3du8mu-q3%74mp=(vkn=%@4wip@&ncf-h6a52+4a(2oda_!l7!'
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
 ALLOWED_HOSTS = []
-
 SITE_ID = 1
 
-# Application definition
-
+'''-----------------------------------------------------------------------------
+Applications 
+-----------------------------------------------------------------------------'''
 INSTALLED_APPS = (
     'suit',
 
@@ -44,69 +36,22 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'bootstrap3',
     'django_static_jquery',
+    'registration',
+    'crispy_forms',
+    'django_email_changer',
 
-    'darkstartools',
+    'ffxi',
 )
 
-MIDDLEWARE_CLASSES = (
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-)
+# django-registration
+ACCOUNT_ACTIVATION_DAYS = 7
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
-ROOT_URLCONF = 'darkstartools.urls'
+# django_email_changer 
+EMAIL_CHANGE_NOTIFICATION_SUBJECT = '[Email Update] - Please verify FFXI Gamify email update'
+EMAIL_CHANGE_NOTIFICATION_FROM = "FFXI Gamify's Friendly Robot <ffxi.gamify@gmail.com>"
 
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, "templates")],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
-]
-
-WSGI_APPLICATION = 'darkstartools.wsgi.application'
-
-# Internationalization
-# https://docs.djangoproject.com/en/1.8/topics/i18n/
-
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
-
-USE_L10N = True
-
-USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.8/howto/static-files/
-'''----------------------------------------------------------------------------
-Static
-----------------------------------------------------------------------------'''
-STATIC_URL = '/static/'
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
-)
-
-STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-)
-
+# suit
 SUIT_CONFIG = {
     'MENU': (
 
@@ -125,17 +70,81 @@ SUIT_CONFIG = {
 }
 
 '''-----------------------------------------------------------------------------
+FFXI-Gamify
+-----------------------------------------------------------------------------'''
+ROOT_URLCONF = 'ffxi.urls'
+WSGI_APPLICATION = 'ffxi.wsgi.application'
+DEFAULT_FROM_EMAIL = "FFXI Gamify's Friendly Robot <ffxi.gamify@gmail.com>"
+LOGIN_URL = '/accounts/login/'
+
+'''-----------------------------------------------------------------------------
+Middleware 
+-----------------------------------------------------------------------------'''
+MIDDLEWARE_CLASSES = (
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+)
+
+'''-----------------------------------------------------------------------------
+Template 
+-----------------------------------------------------------------------------'''
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, "templates")],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
+'''-----------------------------------------------------------------------------
+Internationalization
+https://docs.djangoproject.com/en/1.8/topics/i18n/
+-----------------------------------------------------------------------------'''
+LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'UTC'
+USE_I18N = True
+USE_L10N = True
+USE_TZ = True
+
+'''----------------------------------------------------------------------------
+Static files (CSS, JavaScript, Images)
+https://docs.djangoproject.com/en/1.8/howto/static-files/
+----------------------------------------------------------------------------'''
+STATIC_URL = '/static/'
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static"),
+)
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+)
+
+'''-----------------------------------------------------------------------------
 Database 
 https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 -----------------------------------------------------------------------------'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2', 
-        'NAME': 'darkstar',
-        'USER': 'darkstar',
-        'PASSWORD': 'darkstar',
+        'NAME': 'ffxi_gamify',
+        'USER': 'ffxi_gamify',
+        'PASSWORD': 'ffxi_gamify',
         'HOST': 'localhost',
-        'PORT': '',
+        'PORT': '5432',
     },
     'darkstar': {
         'ENGINE': 'django.db.backends.mysql',
@@ -146,3 +155,4 @@ DATABASES = {
         'PORT': '3306',
     }
 }
+
