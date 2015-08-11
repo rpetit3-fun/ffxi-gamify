@@ -1,0 +1,32 @@
+[2015-08-11 16:56:46 +0000] [7731] [INFO] Starting gunicorn 19.3.0
+[2015-08-11 16:56:46 +0000] [7731] [INFO] Listening at: http://127.0.0.1:8000 (7731)
+[2015-08-11 16:56:46 +0000] [7731] [INFO] Using worker: sync
+[2015-08-11 16:56:46 +0000] [7736] [INFO] Booting worker with pid: 7736
+[2015-08-11 16:56:47 +0000] [7738] [INFO] Booting worker with pid: 7738
+[2015-08-11 16:56:47 +0000] [7740] [INFO] Booting worker with pid: 7740
+[2015-08-11 16:56:47 +0000] [7748] [INFO] Booting worker with pid: 7748
+[2015-08-11 16:56:47 +0000] [7752] [INFO] Booting worker with pid: 7752
+[2015-08-11 16:56:47 +0000] [7754] [INFO] Booting worker with pid: 7754
+[2015-08-11 16:56:47 +0000] [7755] [INFO] Booting worker with pid: 7755
+[2015-08-11 16:56:47 +0000] [7760] [INFO] Booting worker with pid: 7760
+[2015-08-11 16:56:50 +0000] [7731] [INFO] Handling signal: term
+[2015-08-11 20:56:50 +0000] [7754] [INFO] Worker exiting (pid: 7754)
+[2015-08-11 20:56:50 +0000] [7752] [INFO] Worker exiting (pid: 7752)
+[2015-08-11 20:56:50 +0000] [7748] [INFO] Worker exiting (pid: 7748)
+[2015-08-11 20:56:50 +0000] [7755] [INFO] Worker exiting (pid: 7755)
+[2015-08-11 20:56:50 +0000] [7760] [INFO] Worker exiting (pid: 7760)
+[2015-08-11 20:56:50 +0000] [7740] [INFO] Worker exiting (pid: 7740)
+[2015-08-11 20:56:50 +0000] [7738] [INFO] Worker exiting (pid: 7738)
+[2015-08-11 20:56:50 +0000] [7736] [INFO] Worker exiting (pid: 7736)
+[2015-08-11 16:56:50 +0000] [7731] [INFO] Shutting down: Master
+[2015-08-11 16:56:54 +0000] [7775] [INFO] Starting gunicorn 19.3.0
+[2015-08-11 16:56:54 +0000] [7775] [INFO] Listening at: http://127.0.0.1:8000 (7775)
+[2015-08-11 16:56:54 +0000] [7775] [INFO] Using worker: sync
+[2015-08-11 16:56:54 +0000] [7780] [INFO] Booting worker with pid: 7780
+[2015-08-11 16:56:54 +0000] [7782] [INFO] Booting worker with pid: 7782
+[2015-08-11 16:56:54 +0000] [7784] [INFO] Booting worker with pid: 7784
+[2015-08-11 16:56:54 +0000] [7785] [INFO] Booting worker with pid: 7785
+[2015-08-11 16:56:54 +0000] [7790] [INFO] Booting worker with pid: 7790
+[2015-08-11 16:56:54 +0000] [7794] [INFO] Booting worker with pid: 7794
+[2015-08-11 16:56:54 +0000] [7800] [INFO] Booting worker with pid: 7800
+[2015-08-11 16:56:55 +0000] [7804] [INFO] Booting worker with pid: 7804
