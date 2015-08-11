@@ -6,9 +6,81 @@ html, body {
   background-size: cover;
 }
 
+ul.nav a:hover { 
+    background-color: rgba(55, 99, 166, 0.90);
+    color: #fff !important; 
+}
+
+ul.nav a { 
+    background-color: rgba(55, 99, 166, 0.65);
+    color: #fff !important; 
+}
+
 .transparent-border {
     background-color: rgba(55, 99, 166, 0.75);
     border-radius: 1em;
     padding: 1em;
     color: #FFF;
+}
+
+a.decorate {
+    color: #FFF;
+    text-decoration: underline;
+}
+
+p.indent {
+    text-indent: 2em;
+    text-align: justify;
+}
+
+/* /daily-tasks/ */
+img.crystal {
+    opacity: 0;
+    border-radius: 50%;
+    width: 64px;
+    height: 64px;
+}
+
+#earth-cluster {
+    background-color: #f0d070;
+    box-shadow: 0 0 25px 15px #f0d070;
+}
+
+#water-cluster {
+    background-color: #80a0e8;
+    box-shadow: 0 0 30px 15px #80a0e8;
+}
+
+#wind-cluster {
+    background-color: #80b860;
+    box-shadow: 0 0 25px 15px #80b860;
+}
+
+#fire-cluster {
+    background-color: #b87880;
+    box-shadow: 0 0 30px 15px #b87880;
+}
+
+#ice-cluster {
+    background-color: #7CAEC6;
+    box-shadow: 0 0 30px 15px #7CAEC6;
+}
+
+#lightning-cluster {
+    background-color: #995FCD;
+    box-shadow: 0 0 30px 15px #995FCD;
+}
+
+#dark-cluster {
+    background-color: #383838;
+    box-shadow: 0 0 25px 15px #383838;
+}
+
+#light-cluster {
+    background-color: #f8f8f8;
+    box-shadow: 0 0 30px 15px #f8f8f8;
+}
+
+.navbar-inner {
+    background:transparent;
 }

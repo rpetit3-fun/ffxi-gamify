@@ -13,6 +13,7 @@ urlpatterns = [
     # AJAX
     url(r'^ajax/get-daily-stats/', 'ffxi.ajax.get_daily_stats', name='get_daily_stats'),
     url(r'^ajax/update-steps/', 'ffxi.ajax.update_steps', name='update_steps'),
+    url(r'^ajax/add-exp-chain/', 'ffxi.ajax.add_exp_chain', name='add_exp_chain'),
     
     # ffxi-gamify:
     url(r'^admin/', include(admin.site.urls)),

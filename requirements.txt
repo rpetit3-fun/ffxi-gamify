@@ -7,3 +7,4 @@ psycopg2==2.6
 django-registration-redux
 django-crispy-forms-ng==2.0.0
 django-email-changer==0.1.2
+pytz

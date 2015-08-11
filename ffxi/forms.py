@@ -24,24 +24,24 @@ class DailyTasksForm(forms.ModelForm):
         self.helper.form_id = 'save-daily-task'
         self.helper.form_class = 'input-lg'
         self.helper.form_action = ''
-        self.fields['steps'].disabled = True
+        
+        fields = ['jumpjacks', 'high_knees', 'plank_jumps', 
+                  'pushups', 'squats', 'climbers', 'knee_pull_ins', 
+                  'cross_crunches', 'date']
+        
         self.helper.layout = Layout(
             Div(
-                'steps', 'pushups',
+                'jumpjacks', 'high_knees', 'plank_jumps', 'pushups',
                 css_class=css
             ),
             Div(
-                'situps', 'squats',
-                Div(
-                    Div(HTML('''
-                                <button id="update_steps" type="button" class="btn btn-primary btn-lg">
-                                    Sync Steps
-                                </button>
-                            '''), css_class='col-sm-5 col-sm-offset-3'),
-                    Div(Submit('submit', 'Save', css_class='btn-lg'), css_class='col-sm-3'),
-                    css_class='row submit_buttons'
-                ),
+                'climbers', 'knee_pull_ins', 'cross_crunches', 'squats',
                 css_class=css
+            ),
+            Div(
+                
+                Div(Submit('submit', 'Save', css_class='btn-lg'), css_class='col-sm-4'),
+                css_class='row col-md-12 col-md-offset-10 submit_buttons'
             ),
             Field('date', type='hidden'),
         )
@@ -50,9 +50,14 @@ class DailyTasksForm(forms.ModelForm):
         try:
             # Exists so lets update
             dailytasks = DailyTasks.objects.get(user=user, date=POST['date'])
+            dailytasks.jumpjacks = POST['jumpjacks']
+            dailytasks.high_knees = POST['high_knees']
+            dailytasks.plank_jumps = POST['plank_jumps']
             dailytasks.pushups = POST['pushups']
-            dailytasks.situps = POST['situps']
             dailytasks.squats = POST['squats']
+            dailytasks.climbers = POST['climbers']
+            dailytasks.knee_pull_ins = POST['knee_pull_ins']
+            dailytasks.cross_crunches = POST['cross_crunches']
             return dailytasks.save()
         except DailyTasks.DoesNotExists:
             # Does not exist so lets create
@@ -61,10 +66,21 @@ class DailyTasksForm(forms.ModelForm):
 
     class Meta:
         model = DailyTasks
-        fields = ['steps', 'pushups', 'situps', 'squats', 'date']
+        fields = ['jumpjacks', 'high_knees', 'plank_jumps', 
+                  'pushups', 'squats', 'climbers', 'knee_pull_ins', 
+                  'cross_crunches', 'date']
         labels = {
-            'pushups': _('Push Ups <div id="id_pushups-icon"></div>'),
-            'situps': _('Sit Ups <div id="id_situps-icon"></div>'),
-            'squats': _('Squats <div id="id_squats-icon"></div>'),
-            'steps': _('Steps <div id="id_steps-icon"></div>'),
+            # Cardio
+            'jumpjacks': _('Jumping Jacks'),
+            'high_knees': _('High Knees'),
+            'plank_jumps': _('Plank Jumps'),
+            
+            # Upper and Lower Body
+            'pushups': _('Push Ups'),
+            'squats': _('Squats'),
+            
+            # Abs
+            'climbers': _('Mountain Climbers'),
+            'knee_pull_ins': _('Knee Pull-Ins'),
+            'cross_crunches': _('Cross Crunches'),
         }

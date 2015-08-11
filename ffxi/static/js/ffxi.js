@@ -1,6 +1,19 @@
 /* -----------------------------------------------------------------------------
  * /daily-tasks/
  * ---------------------------------------------------------------------------*/
+ var cluster = {
+    'jumpjacks':'#earth-cluster',
+    'high_knees':'#water-cluster',
+    'plank_jumps':'#wind-cluster',
+    'pushups':'#fire-cluster',
+    'climbers':'#ice-cluster',
+    'knee_pull_ins':'#lightning-cluster',
+    'cross_crunches':'#dark-cluster',
+    'squats':'#light-cluster'
+ }
+
+var exp_chain = 0;
+ 
 function init_datepicker() {
     var date = new Date();
     var today = date.getFullYear() + '-' +  (date.getMonth() + 1) + '-' + date.getDate();
@@ -24,6 +37,7 @@ function init_datepicker() {
     $('#datepicker').datepicker('setDate', today);
 
 }
+
 function init_stats_form() {
     var frm = $('#save-daily-task');
     frm.submit(function () {
@@ -67,19 +81,11 @@ function get_daily_stats(date) {
         data: {'date':date},
         dataType: "json",
         success: function(data) { 
-            console.log(data);
             var json = $.parseJSON(data);
             var field = json[0].fields;
-            $('#id_pushups').val(field.pushups);
-            $('#id_pushups-icon').html(get_icon('pushups', field.pushups));
-            $('#id_situps').val(field.situps);
-            $('#id_situps-icon').html(get_icon('situps', field.situps));
-            $('#id_squats').val(field.squats);
-            $('#id_squats-icon').html(get_icon('squats', field.squats));
+            exp_chain = 0;
+            update_stats(field, date);
             $('#id_date').val(date);
-            
-            $('#id_steps').val(field.steps);
-            $('#id_steps-icon').html(get_icon('steps', field.steps));
         },
         error: function(error){
             if (error != 'DoesNotExist') {
@@ -89,27 +95,101 @@ function get_daily_stats(date) {
         }
     });
 }
-function get_icon(field, val) {
+
+function get_current_exp_chain(){
+    var today = date.getFullYear() + '-' +  (date.getMonth() + 1) + '-' + date.getDate();
+    $.ajax({ 
+        type: 'POST',
+        url: '/ajax/get-current-exp-chain/', 
+        data: {'date':date},
+        dataType: "json",
+        success: function(data) { 
+            console.log(data)
+        },
+        error: function(error){
+            if (error != 'DoesNotExist') {
+                console.log("Error:");
+                console.log(error);
+            }
+        }
+    });
+}
+
+function add_exp_chain(date){
+    $.ajax({ 
+        type: 'POST',
+        url: '/ajax/add-exp-chain/', 
+        data: {'date':date},
+        dataType: "json",
+        success: function(data) { 
+            var json = $.parseJSON(data);
+            console.log(data);
+        },
+        error: function(error){
+            if (error != 'DoesNotExist') {
+                console.log("Error:");
+                console.log(error);
+            }
+        }
+    });
+}
+
+function update_stats(field, date) {
+    for (var key in cluster) {
+        // Field Values
+        $('#id_'+key).val(field[key]);
+        // Crystal Opacity
+        opacity = set_opacity(key, field[key])
+        $(cluster[key]).css('opacity', opacity.toFixed(2));
+        exp_chain += opacity;
+        if (opacity == 1) {
+            $('#div_id_'+key+' label').css('color', '#01FF4E');
+        } else {
+            $('#div_id_'+key+' label').css('color', '#FFF');
+        }
+    }
+    progress = (exp_chain/8)*100;
+    $('.progress-bar').css('width', progress+'%').attr('aria-valuenow', progress); ;
+    if (progress == 100) {
+        $('.progress-bar').text('EXP Chain Active!');
+        add_exp_chain(date);
+    } else {
+        $('.progress-bar').text(progress.toFixed(0) + '%');
+    }
+}
+
+function set_opacity(field, val) {
     var status = false;
     
     switch (field) {
-        case 'pushups':
-            status = (val >= 50);
+        case 'jumpjacks':
+            status = val / 200;
             break;
-        case 'situps':
-            status = (val >= 50);
+        case 'high_knees':
+            status = val / 100;
+            break;
+        case 'plank_jumps':
+            status = val / 50;
+            break;
+        case 'pushups':
+            status = val / 100;
+            break;
+        case 'climbers':
+            status = val / 100;
+            break;
+        case 'knee_pull_ins':
+            status = val / 100;
+            break;
+        case 'cross_crunches':
+            status = val / 100;
             break;
         case 'squats':
-            status = (val >= 50);
-            break;
-        case 'steps':
-            status = (val >= 10000);
+            status = val / 100;
             break;
     }
 
-    if (status) {
-        return '<i class="icon-lifefull"></i>'
-    } else {
-        return '<i class="icon-lifeempty"></i>'
+    if (status > 1) {
+        status = 1
     }
+    return status
 }

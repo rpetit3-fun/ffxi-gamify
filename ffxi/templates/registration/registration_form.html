@@ -3,21 +3,11 @@
 {% block title %}FFXI Gamify - Sign Up{% endblock %}
 
 {% block container %}
-    <div class="row">
-        <div>
-            <h3>Sign up for a FFXI Gamify account</h3>
-            <p class="indent">
-                To register an account with FFXI Gamify, please fill out the form 
-                to the below (all fields are required). Once completed you will
-                receive an email with instructions on how to finish your 
-                registration.
-            </p>
-            <hr />
-        </div>
-    </div>
+
     
     <div class="row">
-        <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+        <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 transparent-border">
+                
             {% if form.errors %}
                 <div class="alert alert-warning" role="alert">
                 <strong>Whoops! One or more fields has a problem!</strong>
@@ -36,25 +26,34 @@
                     {% endfor %}
                 </div>
             {% endif %}
-
+            <div class="row col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1">
+                <h3>Get ready to change your life!</h3>
+                <p class="indent">
+                    To register an account with FFXI Gamify, please fill out the form 
+                    to the below (all fields are required). Once completed you will
+                    receive an email with instructions on how to finish your 
+                    registration.
+                </p>
+                <hr />
+            </div>
             <form class="form-horizontal" role="form" method="post" action="?next={{ next|default:"/" }}">
                 {% csrf_token %}
                 <div class="form-group">
-                    <label class="col-sm-3 col-md-3 control-label" for="id_first_name">First Name </label> 
+                    <label class="col-sm-4 col-md-4 control-label" for="id_first_name">First Name </label> 
                     <div class="col-sm-6 col-md-5">
                         <input id="id_first_name" maxlength="50" name="first_name" type="text" 
                                class="form-control input-md" title="Your first name.">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-3 col-md-3 control-label" for="id_last_name">Last Name </label> 
+                    <label class="col-sm-4 col-md-4 control-label" for="id_last_name">Last Name </label> 
                     <div class="col-sm-6 col-md-5">
                         <input id="id_last_name" maxlength="50" name="last_name" type="text" 
                                class="form-control input-md" title="Your last name.">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-3 col-md-3 control-label" for="id_username">Username </label> 
+                    <label class="col-sm-4 col-md-4 control-label" for="id_username">Username </label> 
                     <div class="col-sm-6 col-md-5">
                         <input id="id_username" pattern="^[A-Za-z0-9_]{3,32}$" maxlength="32" 
                                name="username" type="text" class="form-control input-md"
@@ -62,14 +61,14 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-3 col-md-3 control-label" for="id_email">Email Address </label> 
+                    <label class="col-sm-4 col-md-4 control-label" for="id_email">Email Address </label> 
                     <div class="col-sm-6 col-md-5">
                         <input id="id_email" name="email" type="email" class="form-control input-md">
                     </div>
                 </div>
                 
                 <div class="form-group">
-                    <label class="col-sm-3 col-md-3 control-label" for="id_password1">Password </label>
+                    <label class="col-sm-4 col-md-4 control-label" for="id_password1">Password </label>
                     
                     <div class="col-sm-6 col-md-5">
                         <input id="id_password1" name="password1" type="password" class="form-control input-md"
@@ -77,7 +76,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-3 col-md-3 control-label" for="id_password2">Repeat Password </label>
+                    <label class="col-sm-4 col-md-4 control-label" for="id_password2">Repeat Password </label>
                     
                     <div class="col-sm-6 col-md-5">
                         <input id="id_password2" name="password2" type="password" class="form-control input-md"
@@ -85,7 +84,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-sm-3 col-md-3 control-label" for="submit"></label>
+                  <label class="col-sm-4 col-md-4 control-label" for="submit"></label>
                   <div class="col-sm-2 col-md-2">
                     <button id="submit" name="submit" class="btn btn-primary">Register</button>
                   </div>
