@@ -19,6 +19,7 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', 'ffxi.views.index', name='home'),
     url(r'^daily-tasks/', 'ffxi.views.daily_tasks', name='daily_tasks'),
+    url(r'^link-account/', 'ffxi.views.link_account', name='link_account'),
     url(r'^missions/', 'ffxi.views.missions', name='missions'),
     url(r'^quests/', 'ffxi.views.quests', name='quests'),
     url(r'^rewards/', 'ffxi.views.rewards', name='rewards'),

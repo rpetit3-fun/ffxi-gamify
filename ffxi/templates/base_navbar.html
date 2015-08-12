@@ -1,5 +1,6 @@
 {% url 'home' as home %}
 {% url 'daily_tasks' as daily_task %}
+{% url 'characters' as characters %}
 {% url 'missions' as missions %}
 {% url 'quests' as quests %}
 {% url 'rewards' as rewards %}
@@ -12,14 +13,26 @@
         {% if user.is_authenticated %}
             <li class="{% active request home %}"><a href="/">Home</a></li>
             <li class="{% active request daily_task %}"><a href="/daily-tasks/">Daily Tasks</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" 
+                   aria-haspopup="true" aria-expanded="false">
+                    <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <li><a href="/link-account/">Link Account</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="#">Settings</a></li>
+                    <li><a href="/accounts/logout/">Sign Out</a></li>
+                </ul>
+             </li>
             <!--
             <li class="{% active request missions %} disabled"><a href="/missions/">Missions</a></li>
             <li class="{% active request quests %} disabled"><a href="/quests/">Quests</a></li>
             <li class="{% active request rewards %} disabled"><a href="/rewards/">Rewards</a></li>
             -->
-            <li><a href="/accounts/logout/">Logout</a></li>
         {% else %}
-            <li><a href="/accounts/login/">Login</a></li>
+            <li><a href="/accounts/login/">Sign In</a></li>
         {% endif %}
         </ul>
         <div>
@@ -31,7 +44,7 @@
                         </a>
                     </td>
                     {% if user.is_authenticated %}
-                    <td>
+                    <td class="black-text">
                         @{{ user.username }} <br />
                         EXP: {% get_exp user %}<br />
                         EXP Multiplier: {% get_chain user %}

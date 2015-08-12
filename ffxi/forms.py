@@ -2,12 +2,14 @@ from django import forms
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
+from django.db.utils import IntegrityError
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import *
 from crispy_forms.bootstrap import *
 from registration.forms import RegistrationFormUniqueEmail
 
-from ffxi.models import DailyTasks
+from ffxi.models import DailyTasks, LinkedAccount
+from darkstar.models import Accounts
 
 class RegistrationFormWithName(RegistrationFormUniqueEmail):
     first_name = forms.CharField(max_length=50, label='First Name')
@@ -84,3 +86,40 @@ class DailyTasksForm(forms.ModelForm):
             'knee_pull_ins': _('Knee Pull-Ins'),
             'cross_crunches': _('Cross Crunches'),
         }
+
+class LinkAccountForm(forms.Form):
+    login = forms.CharField()
+    password = forms.CharField(widget=forms.PasswordInput())
+    
+    def is_valid(self):
+        valid = super(LinkAccountForm, self).is_valid()
+        
+        if not valid:
+            return valid
+        
+        # Validate the given DSP account and password
+        q = """SELECT id, login FROM accounts 
+               WHERE password=PASSWORD('{0}')""".format(
+               self.cleaned_data['password']
+            )
+        account = Accounts.objects.using('darkstar').raw(q) 
+        if len(list(account)) == 0:
+            self._errors['invalid_credentials'] = 'Either the account name and/or password are incorrect.'
+            return False
+        else: 
+            self.account = account[0]
+ 
+        return True
+
+    def save(self, user, POST):
+        try:
+            linked_account = LinkedAccount(
+                user=user, 
+                acc_id=self.account.id, 
+                name=self.account.login
+            )
+            
+            return linked_account.save()
+        except IntegrityError:
+            self._errors['save_failed'] = 'Failed to save the account to the database'
+            return False

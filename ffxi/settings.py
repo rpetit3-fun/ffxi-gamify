@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'django_email_changer',
 
     'ffxi',
+    'darkstar',
 )
 
 # django-registration

@@ -39,3 +39,8 @@ class ExperienceStats(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     exp = models.PositiveIntegerField(default=0)
     chain = models.DecimalField(default=1.0, max_digits=4, decimal_places=2)
+
+class LinkedAccount(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    acc_id = models.IntegerField(unique=True)
+    name = models.CharField(max_length=16)
