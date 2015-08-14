@@ -1,0 +1,14 @@
+{% for job, level in jobs.items %}
+    {% if level > 0 %}
+        {% if forloop.counter|divisibleby:2 %}
+            <td class="italics">{{job}}</td>
+            <td>{{level}}</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td class="italics">{{job}}</td>
+            <td>{{level}}</td>
+        {% endif %}
+    {% endif %}
+{% endfor %}
+

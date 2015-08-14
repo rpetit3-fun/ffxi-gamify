@@ -7,11 +7,27 @@
 {% load navbar %}
 {% load staticfiles %}
 
+
 {% block navbar %}
     <div class="page-header">
         <ul class="nav nav-pills pull-right">
         {% if user.is_authenticated %}
             <li class="{% active request home %}"><a href="/">Home</a></li>
+            {% get_characters user as characters %}
+            {% if characters %}
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" 
+                       aria-haspopup="true" aria-expanded="false">
+                        Characters
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                        {% for id, name in characters.items%}
+                            <li><a href="/character/{{ id }}/{{ name }}">{{ name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                 </li>
+            {% endif %}
             <li class="{% active request daily_task %}"><a href="/daily-tasks/">Daily Tasks</a></li>
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" 
@@ -44,11 +60,12 @@
                         </a>
                     </td>
                     {% if user.is_authenticated %}
-                    <td class="black-text">
-                        @{{ user.username }} <br />
-                        EXP: {% get_exp user %}<br />
-                        EXP Multiplier: {% get_chain user %}
-                    </td>
+                        {% get_exp_stats user as exp_stats %}
+                        <td class="black-text">
+                            @{{ user.username }} <br />
+                            EXP: {{ exp_stats.exp }}<br />
+                            EXP Multiplier: {{ exp_stats.chain }}
+                        </td>
                     {% endif %}
                 </tr>
             </table>

@@ -39,6 +39,7 @@ def link_account(request):
                 if request.is_ajax():
                     return HttpResponse('saved')
                 else:
+                    # CHANGE THIS TO ACCOUNT CHARACTERS
                     return HttpResponseRedirect('/link-account/')
             else:
                 if request.is_ajax():
@@ -51,6 +52,12 @@ def link_account(request):
     else:
         return HttpResponseRedirect('/')
 
+def character(request, charid, charname):
+    if request.user.is_authenticated():
+        return render_to_response('character.html', {'charid':charid, 'charname':charname}, RequestContext(request))
+    else:
+        return HttpResponseRedirect('/')
+        
 def missions(request):
     return render_to_response('missions.html', {}, RequestContext(request))
 

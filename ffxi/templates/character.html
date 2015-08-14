@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load character %}
+
+{% load staticfiles %}
+
+{% block container %}
+<div class="row">
+  <div class="col-sm-12">
+      <div class="col-xs-12 col-sm-5 col-md-4">
+        <div class="panel panel-default no-border">
+          <!-- Default panel contents -->
+          <div class="panel-heading italics">
+            <h3 class="panel-title">Job Levels</h3>
+         </div>
+          <!-- Table -->
+          <table class="table">
+            {% get_jobs charid %}
+          </table>
+        </div>
+      </div>
+    <div class="row">
+      <div class="col-xs-6 col-sm-4">
+        ...
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

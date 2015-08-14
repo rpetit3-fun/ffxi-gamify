@@ -6,10 +6,11 @@ html, body {
     background-size: cover;
 }
 
-ul.nav a:hover, .nav-pills>li.active>a, .dropdown-menu >li>a:hover{ 
+ul.nav a:hover, .nav-pills>li.active>a, .dropdown-menu >li>a:hover, .panel-default>.panel-heading{ 
     background-image:none !important;
     background-color: rgba(55, 99, 166, 0.90);
     color: #fff !important; 
+    border-color: transparent;
 }
 
 ul.nav>li>a , .nav>li>a:focus{ 
@@ -98,4 +99,36 @@ img.crystal {
 
 .navbar-inner {
     background:transparent;
+}
+
+/* character */
+.less-padding {
+    padding: 0.75em !important;
+}
+
+.italics {
+    font-style: italic;
+}
+
+.no-border {
+    border: none !important;
+}
+
+.panel {
+    background-color: transparent !important;
+}
+.panel-default>.panel-heading{ 
+    background-image:none !important;
+    background-color: rgba(55, 99, 166, 0.95);
+    color: #fff !important; 
+    border-color: transparent;
+}
+
+table.table {
+    background-color: rgba(55, 99, 166, 0.85);
+    color: #fff !important; 
+}
+
+table.table>tbody>tr>td {
+    border-top: 1px solid #FFF;
 }

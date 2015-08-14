@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^missions/', 'ffxi.views.missions', name='missions'),
     url(r'^quests/', 'ffxi.views.quests', name='quests'),
     url(r'^rewards/', 'ffxi.views.rewards', name='rewards'),
+    url(r'^character/(?P<charid>\d+)/(?P<charname>.+)/$', 'ffxi.views.character', name='character'),
     
     # django-email-changer
     url(r'accounts/email/change/activate/(?P<code>[^/]+)/',
