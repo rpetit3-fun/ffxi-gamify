@@ -112,6 +112,13 @@ img.crystal {
 
 .no-border {
     border: none !important;
+    border-top: none !important;
+}
+
+.no-margin {
+    margin: 0px !important;
+    margin-right: 0px !important;
+    margin-left: 0px !important;
 }
 
 .panel {
@@ -124,7 +131,7 @@ img.crystal {
     border-color: transparent;
 }
 
-table.table {
+table.table, .panel-default>.panel-body{
     background-color: rgba(55, 99, 166, 0.85);
     color: #fff !important; 
 }

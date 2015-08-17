@@ -14,6 +14,7 @@ urlpatterns = [
     url(r'^ajax/get-daily-stats/', 'ffxi.ajax.get_daily_stats', name='get_daily_stats'),
     url(r'^ajax/update-steps/', 'ffxi.ajax.update_steps', name='update_steps'),
     url(r'^ajax/add-exp-chain/', 'ffxi.ajax.add_exp_chain', name='add_exp_chain'),
+    url(r'^ajax/get-signet-cost/', 'ffxi.ajax.get_signet_cost', name='get_signet_cost'),
     
     # ffxi-gamify:
     url(r'^admin/', include(admin.site.urls)),

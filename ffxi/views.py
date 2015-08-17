@@ -5,7 +5,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.models import User
 
-from ffxi.forms import DailyTasksForm, LinkAccountForm
+from ffxi.forms import DailyTasksForm, LinkAccountForm, CharacterUpgradeForm, EnhancedSignetUpgrade
 from ffxi.models import DailyTasks, LinkedAccount
 
 def index(request):
@@ -54,7 +54,17 @@ def link_account(request):
 
 def character(request, charid, charname):
     if request.user.is_authenticated():
-        return render_to_response('character.html', {'charid':charid, 'charname':charname}, RequestContext(request))
+        if request.POST:
+            form_character = CharacterUpgradeForm(charid, request.POST)
+            form_signet = EnhancedSignetUpgrade(charid, request.POST)
+        else:
+            form_character = CharacterUpgradeForm(charid=charid)
+            form_signet = EnhancedSignetUpgrade(charid=charid)
+        return render_to_response('character.html', 
+            {'charid':charid, 'charname':charname, 
+            'form_character':form_character, 'form_signet':form_signet},
+            RequestContext(request)
+        )
     else:
         return HttpResponseRedirect('/')
         

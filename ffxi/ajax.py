@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User
 
-from ffxi.models import DailyTasks
+from ffxi.models import DailyTasks, EnhancedSignetLevels
 
 @csrf_exempt
 def get_daily_stats(request):
@@ -46,3 +46,13 @@ def add_exp_chain(request):
         data = serializers.serialize('json', [dailytasks])
         return HttpResponse(json.dumps(data), "application/json")
     return HttpResponseRedirect('/daily-tasks/')
+    
+@csrf_exempt
+def get_signet_cost(request):
+    if request.POST and request.is_ajax():
+        cost = EnhancedSignetLevels.objects.get(id=request.POST['level'])  
+        data = serializers.serialize('json', [cost])
+        return HttpResponse(json.dumps(data), "application/json")
+    return HttpResponseRedirect('/')
+
+    

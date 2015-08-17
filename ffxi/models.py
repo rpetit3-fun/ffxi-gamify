@@ -44,3 +44,7 @@ class LinkedAccount(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     acc_id = models.IntegerField(unique=True)
     name = models.CharField(max_length=16)
+    
+class EnhancedSignetLevels(models.Model):
+    exp = models.PositiveIntegerField()
+

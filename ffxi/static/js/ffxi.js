@@ -193,3 +193,24 @@ function set_opacity(field, val) {
     }
     return status
 }
+
+/* -----------------------------------------------------------------------------
+ * /character/{id}/{name}
+ * ---------------------------------------------------------------------------*/
+ function get_signet_cost(level) {
+    $.ajax({ 
+        type: 'POST',
+        url: '/ajax/get-signet-cost/', 
+        data: {'date':date},
+        dataType: "json",
+        success: function(data) { 
+            console.log(data)
+        },
+        error: function(error){
+            if (error != 'DoesNotExist') {
+                console.log("Error:");
+                console.log(error);
+            }
+        }
+    });
+ }

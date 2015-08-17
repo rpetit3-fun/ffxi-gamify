@@ -1,3 +1,6 @@
+from collections import OrderedDict
+from django.db import connections
+
 from django import forms
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
@@ -8,6 +11,7 @@ from crispy_forms.layout import *
 from crispy_forms.bootstrap import *
 from registration.forms import RegistrationFormUniqueEmail
 
+from ffxi.form_constants import *
 from ffxi.models import DailyTasks, LinkedAccount
 from darkstar.models import Accounts
 
@@ -123,3 +127,88 @@ class LinkAccountForm(forms.Form):
         except IntegrityError:
             self._errors['save_failed'] = 'Failed to save the account to the database'
             return False
+
+class CharacterUpgradeForm(forms.Form):
+    def get_job_levels(self):
+        cursor = connections['darkstar'].cursor()
+        q = """SELECT `war`, `mnk`, `whm`, `blm`, `rdm`, `thf`, `pld`, `drk`, `bst`, 
+                      `brd`, `rng`, `sam`, `nin`, `drg`, `smn`, `blu`, `cor`, `pup`, 
+                      `dnc`, `sch`, `geo`, `run` 
+               FROM char_jobs WHERE charid={0} LIMIT 1""".format(self.charid)
+        cursor.execute(q)
+        desc = cursor.description
+        return [
+                OrderedDict(zip([col[0] for col in desc], row))
+                for row in cursor.fetchall()
+        ][0]
+    
+    
+    def get_jobs(self):
+        job_levels = self.get_job_levels()
+        jobs = []
+        for job, level in job_levels.items():
+            if int(level) > 0:
+                jobs.append((JOB_BY_NAME[job], JOB_NAMES[job]))
+        
+        return jobs
+
+    def __init__(self, *args, **kwargs):
+        self.charid = kwargs.pop('charid')
+        super(CharacterUpgradeForm, self).__init__(*args, **kwargs)
+        self.fields['jobs'] = forms.ChoiceField(
+            label = "Select Job To Level",
+            choices=self.get_jobs(),
+            required = True,
+        )
+        
+        self.fields['new_level'] = forms.IntegerField(
+            label = "Level To Upgrade To",
+            required = True,
+        )
+        self.helper = FormHelper()
+        self.helper.form_id = 'id-chracterupgrade'
+        self.helper.form_class = 'blueForms'
+        self.helper.form_method = 'post'
+        self.helper.form_action = 'submit_character'
+        self.helper.form_tag = False
+        self.helper.add_input(Submit('submit', 'Level Up!'))
+
+class EnhancedSignetUpgrade(forms.Form):
+    
+    def __init__(self, *args, **kwargs):
+        self.charid = kwargs.pop('charid')
+        super(EnhancedSignetUpgrade, self).__init__(*args, **kwargs)
+        self.fields['signet'] = forms.ChoiceField(
+            label = "Select Buff To Upgrade",
+            choices = SIGNET_CHOICES,
+            required = True,
+        )
+        
+        self.fields['upgrade'] = forms.IntegerField(
+            label = "Level",
+            required = True,
+        )
+        self.helper = FormHelper()
+        self.helper.form_id = 'id-signetupgrade'
+        self.helper.form_class = 'blueForms'
+        self.helper.form_method = 'post'
+        self.helper.form_action = 'submit_signet'
+        css = 'col-sm-6'
+        self.helper.layout = Layout(
+            Div(
+                Div('signet', css_class="col-sm-12"),
+                css_class="row"
+            ),
+            Div(
+                Div('upgrade', css_class="col-sm-4"),
+                Div(Button('qtyminus', '-', css_class='btn-md btn-info'), css_class="col-sm-1"),
+                Div(Button('qtyplus', '+', css_class='btn-md btn-info'), css_class="col-sm-1"),
+                css_class="row"
+            ),
+            Div( 
+                Div(
+                    Submit('submit', 'Upgrade!', css_class='btn-md'
+                ), css_class='col-sm-2'),
+                css_class='row submit_buttons'
+            )
+        )
