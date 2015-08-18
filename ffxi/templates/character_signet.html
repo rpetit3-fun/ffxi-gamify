@@ -1,6 +1,6 @@
 {% for name, value in signet.items %}
     <tr>
         <td class="italics no-border">{{name}}</td>
-        <td class="text-right no-border">{{value}}</td>
+        <td class="text-right no-border signet-{{name|slugify}}">{{value}}</td>
     </tr>
 {% endfor %}

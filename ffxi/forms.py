@@ -12,7 +12,7 @@ from crispy_forms.bootstrap import *
 from registration.forms import RegistrationFormUniqueEmail
 
 from ffxi.form_constants import *
-from ffxi.models import DailyTasks, LinkedAccount
+from ffxi.models import DailyTasks, LinkedAccount, ExperienceStats
 from darkstar.models import Accounts
 
 class RegistrationFormWithName(RegistrationFormUniqueEmail):
@@ -148,10 +148,47 @@ class CharacterUpgradeForm(forms.Form):
         jobs = []
         for job, level in job_levels.items():
             if int(level) > 0:
-                jobs.append((JOB_BY_NAME[job], JOB_NAMES[job]))
+                jobs.append((job, JOB_NAMES[job]))
         
         return jobs
 
+    def is_valid(self, user):
+        valid = super(CharacterUpgradeForm, self).is_valid()
+        
+        if not valid:
+            return valid
+        
+        # Validate user has enough EXP to spend
+        exp = ExperienceStats.objects.get(user=user)
+        self.cleaned_data['char_cost'] = self.cleaned_data['char_cost'].replace(",", "")
+        if exp.exp < int(self.cleaned_data['char_cost']):
+            self._errors['not_enough_exp'] = 'You do not have enough stored EXP to make that upgrade.'
+            return False
+
+        return True
+
+    def save(self, user):
+        try:
+            # Deduct EXP Cost
+            exp = ExperienceStats.objects.get(user=user)
+            exp.exp = exp.exp - int(self.cleaned_data['char_cost'])
+            exp.save()
+            
+            # Increase level
+            cursor = connections['darkstar'].cursor()
+            q = """UPDATE `char_jobs` SET `{0}`={1} 
+                   WHERE `charid`={2}""".format(
+                   self.cleaned_data['jobs'], 
+                   self.cleaned_data['level'], 
+                   self.charid
+            )
+            cursor.execute(q)
+            
+            return exp.exp
+        except IntegrityError:
+            self._errors['save_failed'] = 'Failed to save the upgrade to the database'
+            return False
+            
     def __init__(self, *args, **kwargs):
         self.charid = kwargs.pop('charid')
         super(CharacterUpgradeForm, self).__init__(*args, **kwargs)
@@ -161,17 +198,50 @@ class CharacterUpgradeForm(forms.Form):
             required = True,
         )
         
-        self.fields['new_level'] = forms.IntegerField(
-            label = "Level To Upgrade To",
+        self.fields['level'] = forms.IntegerField(
+            label = "Increase Level (Max 75 or Genkai)",
             required = True,
         )
+        
+        self.fields['start_level'] = forms.IntegerField()
+        
+        self.fields['char_cost'] = forms.CharField(
+            label = "Estimated Cost",
+        )
+        self.fields['char_exp'] = forms.CharField(
+            label = "Remaining EXP",
+        )
+        
         self.helper = FormHelper()
-        self.helper.form_id = 'id-chracterupgrade'
+        self.helper.form_id = 'character-upgrade'
         self.helper.form_class = 'blueForms'
         self.helper.form_method = 'post'
         self.helper.form_action = 'submit_character'
-        self.helper.form_tag = False
-        self.helper.add_input(Submit('submit', 'Level Up!'))
+        self.helper.layout = Layout(
+            Div(
+                Div('jobs', css_class="col-sm-12"),
+                css_class="row"
+            ),
+            Div(
+                FieldWithButtons(
+                    'level', 
+                    StrictButton('-', name='qtyminus', css_class='btn-md btn-info level-down'),
+                    StrictButton('+', name='qtyplus', css_class='btn-md btn-info level-up'),
+                    css_class="col-sm-6"
+                ),
+                Div('char_cost', css_class="col-sm-3"),
+                Div('char_exp', css_class="col-sm-3"),
+                Field('start_level', type="hidden"),
+                css_class="row"
+            ),
+            Div( 
+                Div(
+                    Submit('submit', 'Level Up!!', css_class='btn-md pull-right'
+                ), css_class='col-sm-12'),
+                css_class='row submit_buttons'
+            )
+        )
+        
 
 class EnhancedSignetUpgrade(forms.Form):
     
@@ -185,30 +255,44 @@ class EnhancedSignetUpgrade(forms.Form):
         )
         
         self.fields['upgrade'] = forms.IntegerField(
-            label = "Level",
+            label = "Buff Increase",
             required = True,
         )
+        
+        self.fields['signet_cost'] = forms.CharField(
+            label = "Estimated Cost",
+        )
+        self.fields['signet_exp'] = forms.CharField(
+            label = "Remaining EXP",
+        )
+
         self.helper = FormHelper()
         self.helper.form_id = 'id-signetupgrade'
         self.helper.form_class = 'blueForms'
         self.helper.form_method = 'post'
         self.helper.form_action = 'submit_signet'
         css = 'col-sm-6'
+
         self.helper.layout = Layout(
             Div(
                 Div('signet', css_class="col-sm-12"),
                 css_class="row"
             ),
             Div(
-                Div('upgrade', css_class="col-sm-4"),
-                Div(Button('qtyminus', '-', css_class='btn-md btn-info'), css_class="col-sm-1"),
-                Div(Button('qtyplus', '+', css_class='btn-md btn-info'), css_class="col-sm-1"),
+                FieldWithButtons(
+                    'upgrade', 
+                    StrictButton('-', name='qtyminus', css_class='btn-md btn-info buff-down'),
+                    StrictButton('+', name='qtyplus', css_class='btn-md btn-info buff-up'),
+                    css_class="col-sm-6"
+                ),
+                Div('signet_cost', css_class="col-sm-3"),
+                Div('signet_exp', css_class="col-sm-3"),
                 css_class="row"
             ),
             Div( 
                 Div(
-                    Submit('submit', 'Upgrade!', css_class='btn-md'
-                ), css_class='col-sm-2'),
+                    Submit('submit', 'Upgrade!', css_class='btn-md pull-right'
+                ), css_class='col-sm-12'),
                 css_class='row submit_buttons'
             )
         )

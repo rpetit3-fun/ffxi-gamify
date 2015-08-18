@@ -78,9 +78,11 @@
                     {% if user.is_authenticated %}
                         {% get_exp_stats user as exp_stats %}
                         <td class="black-text">
-                            @{{ user.username }} <br />
-                            EXP: {{ exp_stats.exp }}<br />
-                            EXP Multiplier: {{ exp_stats.chain }}
+                            <table>
+                                <tr><td> @{{ user.username }} </td></tr>
+                                <tr><td> EXP: <span id="char-exp">{{ exp_stats.exp }}</span></td></tr>
+                                <tr><td> EXP Multiplier: {{ exp_stats.chain }}</td></tr>
+                            </table>
                         </td>
                     {% endif %}
                 </tr>

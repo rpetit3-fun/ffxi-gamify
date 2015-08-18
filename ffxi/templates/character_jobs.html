@@ -2,12 +2,12 @@
     {% if level > 0 %}
         {% if forloop.counter|divisibleby:2 %}
             <td class="italics">{{job}}</td>
-            <td>{{level}}</td>
+            <td class="job-{{job|slugify}}">{{level}}</td>
         </tr>
         {% else %}
         <tr>
             <td class="italics">{{job}}</td>
-            <td>{{level}}</td>
+            <td class="job-{{job|slugify}}">{{level}}</td>
         {% endif %}
     {% endif %}
 {% endfor %}

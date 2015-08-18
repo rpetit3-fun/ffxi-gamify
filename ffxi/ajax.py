@@ -1,6 +1,6 @@
 import json
 from datetime import datetime
-
+from django.db import connections
 from django.core import serializers, management
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseRedirect
@@ -54,5 +54,29 @@ def get_signet_cost(request):
         data = serializers.serialize('json', [cost])
         return HttpResponse(json.dumps(data), "application/json")
     return HttpResponseRedirect('/')
+    
+@csrf_exempt
+def get_level_cost(request):
+    if request.POST and request.is_ajax():
+        cursor = connections['darkstar'].cursor()
+        q = """SELECT sum(`exp`) FROM `exp_base` 
+               WHERE `level` > {0} AND `level` <= {1} LIMIT 1""".format(
+               request.POST['start_level'],
+               request.POST['final_level']
+        )
+        cursor.execute(q)
+        cost = cursor.fetchone()[0] 
+        return HttpResponse(json.dumps({'cost':str(cost)}), "application/json")
+    return HttpResponseRedirect('/')
 
+@csrf_exempt    
+def get_max_level(request):
+    if request.POST and request.is_ajax():
+        cursor = connections['darkstar'].cursor()
+        q = """SELECT `genkai` FROM `char_jobs` 
+               WHERE `charid`={0} LIMIT 1""".format(request.POST['charid'])
+        cursor.execute(q)
+        genkai = cursor.fetchone()[0] 
+        return HttpResponse(json.dumps({'genkai':str(genkai)}), "application/json")
+    return HttpResponseRedirect('/')
     

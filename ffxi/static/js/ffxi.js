@@ -197,7 +197,7 @@ function set_opacity(field, val) {
 /* -----------------------------------------------------------------------------
  * /character/{id}/{name}
  * ---------------------------------------------------------------------------*/
- function get_signet_cost(level) {
+function get_signet_cost(level) {
     $.ajax({ 
         type: 'POST',
         url: '/ajax/get-signet-cost/', 
@@ -213,4 +213,153 @@ function set_opacity(field, val) {
             }
         }
     });
+}
+ 
+function disable_input() {
+    $('#id_level').attr('readonly', true);
+    $('#id_char_cost').attr('readonly', true);
+    $('#id_char_exp').attr('readonly', true);
+
+    $('#id_upgrade').attr('disabled', true);
+    $('#id_signet_cost').attr('disabled', true);
+    $('#id_signet_exp').attr('disabled', true);
+}
+ 
+function init_signet_form() {
+ 
+}
+ 
+function init_level_form(exp, charid, charname) {
+    
+    var frm = $('#character-upgrade');
+    frm.submit(function () {
+        $.ajax({
+            type: 'POST',
+            url: '/character/'+charid+'/'+charname+'/',
+            data: frm.serialize()+"&charid="+charid+"&form=character",
+            success: function (data) {
+                $("#id_char_cost").val(0);
+                $('#id_char_exp').val(numberWithCommas(data));
+                $('#char-exp').text(numberWithCommas(data));
+                $('#id_level').attr('min', $('#id_level').val());
+                var job = $("#id_jobs option:selected").text();
+                $("td.job-"+ convertToSlug(job)).text($('#id_level').val());
+                console.log(data);
+            },
+            error: function(data) {
+                console.log(data);
+            }
+        });
+        return false;
+    });
+
+
+    $('#id_jobs').change(function() {
+        set_job_level();
+    });
+    
+    $("button.level-down").click(function(){
+        var level = parseInt($("#id_level").val()) - 1; 
+        if (level < $('#id_level').attr('min')) {
+            level = $('#id_level').attr('min')
+        }
+        $("#id_level").val(level)
+        estimate_level_cost(exp);
+    }); 
+    
+    $("button.level-up").click(function(){
+        var level = parseInt($("#id_level").val()) + 1;
+        if (level > $('#id_level').attr('max')) {
+            level = $('#id_level').attr('max')
+        }
+        $("#id_level").val(level)
+        estimate_level_cost(exp);
+    }); 
+    
+    set_job_level();
+    get_max_level(charid);
+    
+    $('#id_char_exp').val(numberWithCommas(exp));
+}
+ 
+function set_job_level() {
+    var job = $("#id_jobs option:selected").text();
+    var level = $("td.job-"+ convertToSlug(job)).text();
+    $("#id_start_level").val(level);
+    $("#id_level").val(level);
+    $('#id_level').attr('min', level);
+    $("#id_char_cost").val(0);
+    if (level == 75) {
+        $('button.level-down').attr('disabled', true);
+        $('button.level-up').attr('disabled', true);
+    } else {
+        $('button.level-down').removeAttr('disabled');
+        $('button.level-up').removeAttr('disabled');
+    }
  }
+ 
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function get_max_level(charid) {
+    $.ajax({ 
+        type: 'POST',
+        url: '/ajax/get-max-level/', 
+        data: {'charid':charid},
+        dataType: "text",
+        success: function(data) { 
+            console.log(data, exp);
+            var json = $.parseJSON(data);
+            $('#id_level').attr('max', json["genkai"]);
+        },
+        error: function(error){
+            if (error != 'DoesNotExist') {
+                console.log("Error:");
+                console.log(error);
+            }
+        }
+    });
+}
+
+function estimate_level_cost(exp){
+    var start_level = $("#id_start_level").val();
+    var final_level = $("#id_level").val()
+    $.ajax({ 
+        type: 'POST',
+        url: '/ajax/get-level-cost/', 
+        data: {'start_level':start_level, 'final_level': final_level},
+        dataType: "text",
+        success: function(data) { 
+            console.log(data, exp);
+            var json = $.parseJSON(data);
+            if (json["cost"] == "None") {
+                json["cost"] = 0
+            }
+            $("#id_char_cost").val( numberWithCommas(json["cost"]) );
+            
+            if ( parseInt(json["cost"]) > exp){
+                console.log("in here");
+                $('#submit-id-submit').attr('disabled', true);
+            } else {
+                $('#submit-id-submit').removeAttr('disabled');
+            }
+            
+        },
+        error: function(error){
+            if (error != 'DoesNotExist') {
+                console.log("Error:");
+                console.log(error);
+            }
+        }
+    });
+}
+
+function convertToSlug(Text)
+{
+    return Text
+        .toLowerCase()
+        .replace(/ /g,'-')
+        .replace(/[^\w-]+/g,'')
+        ;
+}

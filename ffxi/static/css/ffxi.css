@@ -139,3 +139,7 @@ table.table, .panel-default>.panel-body{
 table.table>tbody>tr>td {
     border-top: 1px solid #FFF;
 }
+
+.asteriskField {
+    display: none;
+}

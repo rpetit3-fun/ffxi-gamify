@@ -55,18 +55,34 @@ def link_account(request):
 def character(request, charid, charname):
     if request.user.is_authenticated():
         if request.POST:
-            form_character = CharacterUpgradeForm(charid, request.POST)
-            form_signet = EnhancedSignetUpgrade(charid, request.POST)
+            form = None
+            if request.POST['form'] == 'character':
+                form = CharacterUpgradeForm(request.POST, charid=charid)
+            else:
+                form = EnhancedSignetUpgrade(request.POST)
+                
+            if form.is_valid(request.user):
+                saved = form.save(request.user)
+                if request.is_ajax():
+                    return HttpResponse(saved)
+                else:
+                    return HttpResponseRedirect('/character/'+charid+"/"+charname+"/")
+            else:
+                if request.is_ajax():
+                    return HttpResponse(request.POST['char_cost'])
+                else:
+                    return HttpResponseRedirect('/character/'+charid+"/"+charname+"/")
         else:
             form_character = CharacterUpgradeForm(charid=charid)
             form_signet = EnhancedSignetUpgrade(charid=charid)
-        return render_to_response('character.html', 
-            {'charid':charid, 'charname':charname, 
-            'form_character':form_character, 'form_signet':form_signet},
-            RequestContext(request)
+            return render_to_response('character.html', 
+                {'charid':charid, 'charname':charname, 
+                'form_character':form_character, 'form_signet':form_signet},
+                RequestContext(request)
         )
     else:
         return HttpResponseRedirect('/')
+
         
 def missions(request):
     return render_to_response('missions.html', {}, RequestContext(request))

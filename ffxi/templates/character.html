@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load navbar %}
 {% load character %}
 {% load staticfiles %}
 {% load crispy_forms_tags %}
@@ -127,4 +128,18 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static "/static/js/ffxi.js" %}"></script>
+    <script>
+        {% get_exp_stats user as exp_stats %}
+        var exp = {{ exp_stats.exp|cut:"," }};
+        var charid = {{charid}};
+        var charname = "{{charname}}";
+        $(document).ready(function () {       
+            disable_input();
+            init_level_form(exp, charid, charname);
+        });
+    </script>
 {% endblock %}
