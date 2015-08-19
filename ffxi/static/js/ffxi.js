@@ -286,10 +286,8 @@ function set_buff_value(buff, val) {
     switch (buff) {
         case 'signet-defense':
         case 'signet-evasion':
-            multiplier = 5;
-            break;
         case 'signet-attack':
-            multiplier = 3;
+            multiplier = 5;
             break;
         case 'signet-hp-boost':
         case 'signet-mp-boost':
