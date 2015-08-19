@@ -292,7 +292,7 @@ function set_buff_value(buff, val) {
         case 'signet-hp-boost':
         case 'signet-mp-boost':
         case 'signet-regain':
-            multiplier = 2;
+            multiplier = 3;
             break;
     }
 

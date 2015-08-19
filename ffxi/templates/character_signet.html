@@ -2,16 +2,14 @@
     <tr>
         <td class="no-border">{{name}}</td>
         <td id="signet-{{name|slugify}}" class="text-right no-border">
-        {% if name == 'Defense' or name == 'Attack' or name == 'Evasion' %}
-            +<span class='value'>{{value}}</span>
-        {% elif name == 'Regen' %}
+        {% if name == 'Regen' %}
             <span class='value'>{{value}}</span> HP/tick
         {% elif name == 'Refresh' %}
             <span class='value'>{{value}}</span> MP/tick
         {% elif name == 'Regain' %}
             <span class='value'>{{value}}</span> TP/tick
         {% else %}
-            <span class='value'>{{value}}</span>
+            +<span class='value'>{{value}}</span>%
         {% endif %}
             <span hidden class='level'>{{value}}</span>
          </td>
