@@ -1,6 +1,19 @@
 {% for name, value in signet.items %}
     <tr>
-        <td class="italics no-border">{{name}}</td>
-        <td class="text-right no-border signet-{{name|slugify}}">{{value}}</td>
+        <td class="no-border">{{name}}</td>
+        <td id="signet-{{name|slugify}}" class="text-right no-border">
+        {% if name == 'Defense' or name == 'Attack' or name == 'Evasion' %}
+            +<span class='value'>{{value}}</span>
+        {% elif name == 'Regen' %}
+            <span class='value'>{{value}}</span> HP/tick
+        {% elif name == 'Refresh' %}
+            <span class='value'>{{value}}</span> MP/tick
+        {% elif name == 'Regain' %}
+            <span class='value'>{{value}}</span> TP/tick
+        {% else %}
+            <span class='value'>{{value}}</span>
+        {% endif %}
+            <span hidden class='level'>{{value}}</span>
+         </td>
     </tr>
 {% endfor %}

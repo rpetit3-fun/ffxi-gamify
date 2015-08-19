@@ -2,25 +2,9 @@ from collections import OrderedDict
 from django import template
 from django.db import connections
 from polutils.models import Titles
+from ffxi.form_constants import *
 register = template.Library()
-
-JOB_NAMES = {
-    'war': 'Warrior', 'mnk': 'Monk', 'whm': 'White Mage', 'blm': 'Black Mage', 
-    'rdm': 'Red Mage', 'thf': 'Thief', 'pld': 'Paladin', 'drk': 'Dark Knight', 
-    'bst': 'Beastmaster', 'brd': 'Bard', 'rng': 'Ranger', 'sam': 'Samurai',
-    'nin': 'Ninja', 'drg': 'Dragoon', 'smn': 'Summoner', 'blu': 'Blue Mage', 
-    'cor': 'Corsair', 'pup': 'Puppetmaster', 'dnc': 'Dancer', 'sch': 'Scholar', 
-    'geo': 'Geomancer', 'run': 'Rune Fencer' 
-}
-
-JOB_BY_ID = { 
-    1: 'Warrior', 2: 'Monk', 3: 'White Mage', 4: 'Black Mage', 5: 'Red Mage', 
-    6: 'Thief', 7: 'Paladin', 8: 'Dark Knight', 9: 'Beastmaster', 10: 'Bard', 
-    11: 'Ranger', 12: 'Samurai', 13: 'Ninja', 14: 'Dragoon', 15: 'Summoner', 
-    16: 'Blue Mage', 17: 'Corsair', 18: 'Puppetmaster', 19: 'Dancer', 
-    20: 'Scholar', 21: 'Geomancer', 22: 'Rune Fencer'
-}
-             
+          
 def fetchalljobs(cursor):
     desc = cursor.description
     return [
@@ -53,8 +37,8 @@ def get_status(charid):
            FROM char_stats WHERE charid={0} LIMIT 1""".format(charid)
     cursor.execute(q)
     status = dictfetchall(cursor)[0]
-    status['mjob'] = JOB_BY_ID[status['mjob']]
-    status['sjob'] = JOB_BY_ID[status['sjob']]
+    status['mjob'] = JOB_BY_ID_SHORT[status['mjob']].upper()
+    status['sjob'] = JOB_BY_ID_SHORT[status['sjob']].upper()
     return status
 
 @register.simple_tag
@@ -79,7 +63,7 @@ def get_title(charid):
 def get_enhanced_signet(charid):
     signet = OrderedDict((
         ('HP Boost', 0), ('MP Boost', 0), ('Defense', 0), ('Evasion', 0), 
-        ('Regen', 0), ('Refresh', 0), ('Regain', 0)
+        ('Attack', 0), ('Regen', 0), ('Refresh', 0), ('Regain', 0)
     ))
     cursor = connections['darkstar'].cursor()
     q = """SELECT `varname`, `value` FROM char_vars 

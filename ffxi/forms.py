@@ -13,7 +13,7 @@ from registration.forms import RegistrationFormUniqueEmail
 
 from ffxi.form_constants import *
 from ffxi.models import DailyTasks, LinkedAccount, ExperienceStats
-from darkstar.models import Accounts
+from darkstar.models import Accounts, CharVars
 
 class RegistrationFormWithName(RegistrationFormUniqueEmail):
     first_name = forms.CharField(max_length=50, label='First Name')
@@ -236,7 +236,7 @@ class CharacterUpgradeForm(forms.Form):
             ),
             Div( 
                 Div(
-                    Submit('submit', 'Level Up!!', css_class='btn-md pull-right'
+                    Submit('submit', 'Level Up!!', css_class='btn-md pull-right level-submit'
                 ), css_class='col-sm-12'),
                 css_class='row submit_buttons'
             )
@@ -244,6 +244,44 @@ class CharacterUpgradeForm(forms.Form):
         
 
 class EnhancedSignetUpgrade(forms.Form):
+    def is_valid(self, user):
+        valid = super(EnhancedSignetUpgrade, self).is_valid()
+        
+        if not valid:
+            return valid
+        
+        # Validate user has enough EXP to spend
+        exp = ExperienceStats.objects.get(user=user)
+        self.cleaned_data['signet_cost'] = self.cleaned_data['signet_cost'].replace(",", "")
+        if exp.exp < int(self.cleaned_data['signet_cost']):
+            self._errors['not_enough_exp'] = 'You do not have enough stored EXP to make that upgrade.'
+            return False
+
+        return True
+    
+    def save(self, user):
+        try:
+            # Deduct EXP Cost
+            exp = ExperienceStats.objects.get(user=user)
+            exp.exp = exp.exp - int(self.cleaned_data['signet_cost'])
+            exp.save()
+            
+            # Increase buff level
+            cursor = connections['darkstar'].cursor()
+            q = """INSERT INTO `char_vars` (`charid`, `varname`, `value`)
+                   VALUES ('{0}', '{1}', '{2}')
+                   ON DUPLICATE KEY UPDATE `value`={2}""".format(
+                   self.charid,
+                   self.cleaned_data['signet'], 
+                   self.cleaned_data['upgrade']
+            )
+            cursor.execute(q)
+            
+
+            return exp.exp
+        except IntegrityError:
+            self._errors['save_failed'] = 'Failed to save the upgrade to the database'
+            return False
     
     def __init__(self, *args, **kwargs):
         self.charid = kwargs.pop('charid')
@@ -255,9 +293,11 @@ class EnhancedSignetUpgrade(forms.Form):
         )
         
         self.fields['upgrade'] = forms.IntegerField(
-            label = "Buff Increase",
+            label = "Buff Level (Max 30)",
             required = True,
         )
+        
+        self.fields['start_upgrade'] = forms.IntegerField()
         
         self.fields['signet_cost'] = forms.CharField(
             label = "Estimated Cost",
@@ -267,11 +307,10 @@ class EnhancedSignetUpgrade(forms.Form):
         )
 
         self.helper = FormHelper()
-        self.helper.form_id = 'id-signetupgrade'
+        self.helper.form_id = 'signet-upgrade'
         self.helper.form_class = 'blueForms'
         self.helper.form_method = 'post'
         self.helper.form_action = 'submit_signet'
-        css = 'col-sm-6'
 
         self.helper.layout = Layout(
             Div(
@@ -287,11 +326,12 @@ class EnhancedSignetUpgrade(forms.Form):
                 ),
                 Div('signet_cost', css_class="col-sm-3"),
                 Div('signet_exp', css_class="col-sm-3"),
+                Field('start_upgrade', type="hidden"),
                 css_class="row"
             ),
             Div( 
                 Div(
-                    Submit('submit', 'Upgrade!', css_class='btn-md pull-right'
+                    Submit('submit', 'Upgrade!', css_class='btn-md pull-right upgrade-submit'
                 ), css_class='col-sm-12'),
                 css_class='row submit_buttons'
             )

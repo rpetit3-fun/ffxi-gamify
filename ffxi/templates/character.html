@@ -13,20 +13,20 @@
                     <div class="panel panel-default no-border">
                       <!-- Default panel contents -->
                       <div class="panel-heading italics">
-                        <h3 class="panel-title">Status</h3>
+                        <h3 class="panel-title">{{ charname }}</h3>
                      </div>
                       <!-- Table -->
                       <table class="table italics">
-                        <tr>
-                            <td class="no-border"> {{ charname }} </td>
-                        </tr>
                         {% get_status charid as status %}
                         <tr>
-                            <td class="no-border" colspan="2">Lv {{ status.mlvl }} {{ status.mjob }}</td>
+                            <td class="no-border">
+                                {{ status.mjob }}{{ status.mlvl }}/{{ status.sjob }}{{ status.slvl }}
+                            </td>
                         </tr>
                         <tr>
-                            <td class="no-border" colspan="2">Lv {{ status.slvl }} {{ status.sjob }}</td>
-                        </tr>
+                            <td class="no-border">{% get_gil charid %} Gil</td>
+                        </tr>                       
+                        <!--
                         <tr>
                             <td class="no-border">HP</td>
                             <td class="no-border">{{ status.hp }}/{{ status.hp }}</td>
@@ -35,20 +35,7 @@
                             <td class="no-border">MP</td>
                             <td class="no-border">{{ status.mp }}/{{ status.mp }}</td>
                         </tr>
-                      </table>
-                    </div>
-                </div>
-                <div class="row no-margin">
-                    <div class="panel panel-default no-border">
-                      <!-- Default panel contents -->
-                      <div class="panel-heading italics">
-                        <h3 class="panel-title">Current Gil</h3>
-                     </div>
-                      <!-- Table -->
-                      <table class="table">
-                        <tr>
-                            <td class="text-right">{% get_gil charid %} G</td>
-                        </tr>
+                        -->
                       </table>
                     </div>
                 </div>
@@ -62,7 +49,7 @@
                            Command <strong>@signet</strong>
                       </div>
                       <!-- Table -->
-                        <table class="table">
+                        <table class="table italics">
                             {% get_enhanced_signet charid %}
                         </table>
                     </div>
@@ -99,6 +86,7 @@
             </div>
             
             <!-- Third Column -->
+            <input id="current-exp" name="start_level" type="hidden">
             <div class="col-xs-12 col-md-6">
                 <div class="row no-margin">
                     <div class="panel panel-default no-border">
@@ -139,7 +127,9 @@
         var charname = "{{charname}}";
         $(document).ready(function () {       
             disable_input();
+            update_exp(exp);
             init_level_form(exp, charid, charname);
+            init_signet_form(exp, charid, charname);
         });
     </script>
 {% endblock %}

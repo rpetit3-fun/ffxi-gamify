@@ -220,17 +220,150 @@ function disable_input() {
     $('#id_char_cost').attr('readonly', true);
     $('#id_char_exp').attr('readonly', true);
 
-    $('#id_upgrade').attr('disabled', true);
-    $('#id_signet_cost').attr('disabled', true);
-    $('#id_signet_exp').attr('disabled', true);
+    $('#id_upgrade').attr('readonly', true);
+    $('#id_signet_cost').attr('readonly', true);
+    $('#id_signet_exp').attr('readonly', true);
 }
  
-function init_signet_form() {
+function init_signet_form(exp, charid, charname) {
+    var frm = $('#signet-upgrade');
+    frm.submit(function () {
+        $.ajax({
+            type: 'POST',
+            url: '/character/'+charid+'/'+charname+'/',
+            data: frm.serialize()+"&charid="+charid+"&form=signet",
+            success: function (data) {
+                $("#id_signet_cost").val(0);
+                $('#id_upgrade').attr('min', $('#id_upgrade').val());
+                var buff = "signet-" + convertToSlug($("#id_signet option:selected").text());
+                set_buff_value(buff, $('#id_upgrade').val());
+                update_exp(data);
+                update_signet_buttons($('#id_upgrade').val());
+                console.log(data);
+            },
+            error: function(data) {
+                console.log(data);
+            }
+        });
+        return false;
+    });
+
+
+    $('#id_signet').change(function() {
+        set_signet_level();
+    });
+    
+    $("button.buff-down").click(function(){
+        var level = parseInt($("#id_upgrade").val()) - 1; 
+        if (level < $('#id_upgrade').attr('min')) {
+            level = $('#id_upgrade').attr('min')
+        }
+        $("#id_upgrade").val(level)
+        estimate_signet_cost();
+    }); 
+    
+    $("button.buff-up").click(function(){
+        var level = parseInt($("#id_upgrade").val()) + 1;
+        if (level > $('#id_upgrade').attr('max')) {
+            level = $('#id_upgrade').attr('max')
+        }
+        $("#id_upgrade").val(level)
+        estimate_signet_cost();
+    }); 
+    $('#id_upgrade').attr('max', 30);
+    set_signet_level();
+    
+    // set buff values
+    $("td[id^=signet").each(function() {
+        var id = $(this).attr("id");
+        set_buff_value(id, $("#"+ id +" span.level" ).text());
+    });
+}
+
+function set_buff_value(buff, val) {
+    var multiplier = 1;
+    
+    switch (buff) {
+        case 'signet-defense':
+        case 'signet-evasion':
+            multiplier = 5;
+            break;
+        case 'signet-attack':
+            multiplier = 3;
+            break;
+        case 'signet-hp-boost':
+        case 'signet-mp-boost':
+        case 'signet-regain':
+            multiplier = 2;
+            break;
+    }
+
+    $("#"+ buff +' span.value').text(val * multiplier);
+}
+
+function set_signet_level() {
+    var buff = $("#id_signet option:selected").text();
+    var level = $("#signet-"+ convertToSlug(buff) +' span.level').text();
+    $("#id_start_upgrade").val(level);
+    $("#id_upgrade").val(level);
+    $('#id_upgrade').attr('min', level);
+    $("#id_signet_cost").val(0);
+    update_signet_buttons(level);
+}
  
+function update_signet_buttons(level) {
+    if (level == 30) {
+        $('button.buff-down').attr('disabled', true);
+        $('button.buff-up').attr('disabled', true);
+        $('#submit-id-submit.upgrade-submit').attr('disabled', true);
+    } else {
+        $('button.buff-down').removeAttr('disabled');
+        $('button.buff-up').removeAttr('disabled');
+        $('#submit-id-submit.upgrade-submit').removeAttr('disabled');
+    }
+}
+
+function estimate_signet_cost() {
+    var start_level = $("#id_start_upgrade").val();
+    var final_level = $("#id_upgrade").val();
+    $.ajax({ 
+        type: 'POST',
+        url: '/ajax/get-signet-cost/', 
+        data: {'start_level':start_level, 'final_level': final_level},
+        dataType: "text",
+        success: function(data) { 
+            console.log(start_level, final_level, data,  $('#current-exp').val());
+            var json = $.parseJSON(data);
+            if (json["cost"] == "None") {
+                json["cost"] = 0
+            }
+            $("#id_signet_cost").val( numberWithCommas(json["cost"]) );
+            $("#id_start_upgrade").val($("#id_upgrade").val());
+            if ( parseInt(json["cost"]) >  $('#current-exp').val()){
+                $('submit.upgrade-submit').attr('disabled', true);
+            } else {
+                $('submit.upgrade-submit').removeAttr('disabled');
+            }
+            
+        },
+        error: function(error){
+            if (error != 'DoesNotExist') {
+                console.log("Error:");
+                console.log(error);
+            }
+        }
+    });
+}
+
+function update_exp(exp) {
+    $('#current-exp').val(exp);
+    exp = numberWithCommas(exp);
+    $('#id_char_exp').val(exp);
+    $('#id_signet_exp').val(exp);
+    $('#char-exp').text(exp);
 }
  
 function init_level_form(exp, charid, charname) {
-    
     var frm = $('#character-upgrade');
     frm.submit(function () {
         $.ajax({
@@ -239,11 +372,12 @@ function init_level_form(exp, charid, charname) {
             data: frm.serialize()+"&charid="+charid+"&form=character",
             success: function (data) {
                 $("#id_char_cost").val(0);
-                $('#id_char_exp').val(numberWithCommas(data));
-                $('#char-exp').text(numberWithCommas(data));
                 $('#id_level').attr('min', $('#id_level').val());
                 var job = $("#id_jobs option:selected").text();
                 $("td.job-"+ convertToSlug(job)).text($('#id_level').val());
+                
+                update_level_buttons($('#id_level').val());
+                update_exp(data);
                 console.log(data);
             },
             error: function(data) {
@@ -264,7 +398,7 @@ function init_level_form(exp, charid, charname) {
             level = $('#id_level').attr('min')
         }
         $("#id_level").val(level)
-        estimate_level_cost(exp);
+        estimate_level_cost();
     }); 
     
     $("button.level-up").click(function(){
@@ -273,13 +407,11 @@ function init_level_form(exp, charid, charname) {
             level = $('#id_level').attr('max')
         }
         $("#id_level").val(level)
-        estimate_level_cost(exp);
+        estimate_level_cost();
     }); 
     
     set_job_level();
     get_max_level(charid);
-    
-    $('#id_char_exp').val(numberWithCommas(exp));
 }
  
 function set_job_level() {
@@ -289,14 +421,20 @@ function set_job_level() {
     $("#id_level").val(level);
     $('#id_level').attr('min', level);
     $("#id_char_cost").val(0);
-    if (level == 75) {
+    update_level_buttons(level);
+}
+ 
+function update_level_buttons(level) {
+    if (level == $('#id_level').attr('max')) {
         $('button.level-down').attr('disabled', true);
         $('button.level-up').attr('disabled', true);
+        $('#submit-id-submit.level-submit').attr('disabled', true);
     } else {
         $('button.level-down').removeAttr('disabled');
         $('button.level-up').removeAttr('disabled');
+        $('#submit-id-submit.level-submit').removeAttr('disabled');
     }
- }
+}
  
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -322,27 +460,27 @@ function get_max_level(charid) {
     });
 }
 
-function estimate_level_cost(exp){
+function estimate_level_cost() {
     var start_level = $("#id_start_level").val();
-    var final_level = $("#id_level").val()
+    var final_level = $("#id_level").val();
     $.ajax({ 
         type: 'POST',
         url: '/ajax/get-level-cost/', 
         data: {'start_level':start_level, 'final_level': final_level},
         dataType: "text",
         success: function(data) { 
-            console.log(data, exp);
+            console.log(start_level, final_level, data,  $('#current-exp').val());
             var json = $.parseJSON(data);
             if (json["cost"] == "None") {
                 json["cost"] = 0
             }
             $("#id_char_cost").val( numberWithCommas(json["cost"]) );
-            
-            if ( parseInt(json["cost"]) > exp){
+            $("#id_start_level").val($("#id_level").val());
+            if ( parseInt(json["cost"]) > $('#current-exp').val()){
                 console.log("in here");
-                $('#submit-id-submit').attr('disabled', true);
+                $('#submit-id-submit.level-submit').attr('disabled', true);
             } else {
-                $('#submit-id-submit').removeAttr('disabled');
+                $('#submit-id-submit.level-submit').removeAttr('disabled');
             }
             
         },
@@ -355,8 +493,7 @@ function estimate_level_cost(exp){
     });
 }
 
-function convertToSlug(Text)
-{
+function convertToSlug(Text) {
     return Text
         .toLowerCase()
         .replace(/ /g,'-')

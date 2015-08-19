@@ -59,7 +59,7 @@ def character(request, charid, charname):
             if request.POST['form'] == 'character':
                 form = CharacterUpgradeForm(request.POST, charid=charid)
             else:
-                form = EnhancedSignetUpgrade(request.POST)
+                form = EnhancedSignetUpgrade(request.POST, charid=charid)
                 
             if form.is_valid(request.user):
                 saved = form.save(request.user)

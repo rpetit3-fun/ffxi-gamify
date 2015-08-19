@@ -50,9 +50,15 @@ def add_exp_chain(request):
 @csrf_exempt
 def get_signet_cost(request):
     if request.POST and request.is_ajax():
-        cost = EnhancedSignetLevels.objects.get(id=request.POST['level'])  
-        data = serializers.serialize('json', [cost])
-        return HttpResponse(json.dumps(data), "application/json")
+        cursor = connections['default'].cursor()
+        q = """SELECT sum(exp) FROM ffxi_enhancedsignetlevels
+               WHERE id > {0} AND id <= {1} LIMIT 1""".format(
+               request.POST['start_level'],
+               request.POST['final_level']
+        )
+        cursor.execute(q)
+        cost = cursor.fetchone()[0] 
+        return HttpResponse(json.dumps({'cost':str(cost)}), "application/json")
     return HttpResponseRedirect('/')
     
 @csrf_exempt

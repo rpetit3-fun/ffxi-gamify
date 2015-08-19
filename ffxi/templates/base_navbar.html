@@ -29,20 +29,7 @@
                  </li>
                  
             {% endif %}
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" 
-                   aria-haspopup="true" aria-expanded="false">
-                    Shop
-                    <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                    {% if characters %}
-                        <li><a href="/shop/character-upgrades/">Character Upgrades</a></li>
-                    {% endif %}
-                    <li><a href="/shop/system-upgrades/">System Upgrades</a></li>
-                    <li><a href="/shop/weapons/">Weapons</a></li>
-                </ul>
-             </li>
+
             
             <li class="{% active request daily_task %}"><a href="/daily-tasks/">Daily Tasks</a></li>
             <li class="dropdown">
@@ -59,6 +46,21 @@
                 </ul>
              </li>
             <!--
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" 
+                   aria-haspopup="true" aria-expanded="false">
+                    Shop
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    {% if characters %}
+                        <li><a href="/shop/character-upgrades/">Character Upgrades</a></li>
+                    {% endif %}
+                    <li><a href="/shop/system-upgrades/">System Upgrades</a></li>
+                    <li><a href="/shop/weapons/">Weapons</a></li>
+                </ul>
+             </li>
+            
             <li class="{% active request missions %} disabled"><a href="/missions/">Missions</a></li>
             <li class="{% active request quests %} disabled"><a href="/quests/">Quests</a></li>
             <li class="{% active request rewards %} disabled"><a href="/rewards/">Rewards</a></li>
