@@ -24,8 +24,6 @@ SITE_ID = 1
 Applications 
 -----------------------------------------------------------------------------'''
 INSTALLED_APPS = (
-    'suit',
-
     'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.auth',

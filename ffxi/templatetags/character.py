@@ -38,7 +38,10 @@ def get_status(charid):
     cursor.execute(q)
     status = dictfetchall(cursor)[0]
     status['mjob'] = JOB_BY_ID_SHORT[status['mjob']].upper()
-    status['sjob'] = JOB_BY_ID_SHORT[status['sjob']].upper()
+    if status['sjob']:
+        status['sjob'] = JOB_BY_ID_SHORT[status['sjob']].upper()
+    else:
+        status['sjob'] = ''
     return status
 
 @register.simple_tag

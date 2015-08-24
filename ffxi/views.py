@@ -35,17 +35,24 @@ def link_account(request):
         if request.POST:
             form = LinkAccountForm(request.POST)
             if form.is_valid():
-                linked_account = form.save(request.user, request.POST)
-                if request.is_ajax():
-                    return HttpResponse('saved')
+                status = form.save(request.user, request.POST)
+                if status[0]:
+                    # Has Character, send to that page!
+                    url = '/character/{0}/{1}/'.format(
+                        status[1]['charid'],
+                        status[1]['charname']
+                    )
+                    return HttpResponseRedirect(url)
                 else:
-                    # CHANGE THIS TO ACCOUNT CHARACTERS
-                    return HttpResponseRedirect('/link-account/')
+                    return render_to_response(
+                        'link_account.html',
+                        {'form': form},
+                        RequestContext(request)
+                    )
             else:
-                if request.is_ajax():
-                    return HttpResponse(form.errors)
-                else:
-                    return render_to_response('link_account.html', {'form': form}, RequestContext(request))
+                return render_to_response(
+                    'link_account.html', {'form': form}, RequestContext(request)
+                )
         else:
             form = LinkAccountForm()
             return render_to_response('link_account.html', {'form': form}, RequestContext(request))

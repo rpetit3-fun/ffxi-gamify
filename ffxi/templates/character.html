@@ -20,22 +20,16 @@
                         {% get_status charid as status %}
                         <tr>
                             <td class="no-border">
-                                {{ status.mjob }}{{ status.mlvl }}/{{ status.sjob }}{{ status.slvl }}
+                                {% if status.sjob %}
+                                    {{ status.mjob }}{{ status.mlvl }}/{{ status.sjob }}{{ status.slvl }}
+                                {% else %}
+                                    {{ status.mjob }}{{ status.mlvl }}
+                                {% endif %}
                             </td>
                         </tr>
                         <tr>
                             <td class="no-border">{% get_gil charid %} Gil</td>
-                        </tr>                       
-                        <!--
-                        <tr>
-                            <td class="no-border">HP</td>
-                            <td class="no-border">{{ status.hp }}/{{ status.hp }}</td>
                         </tr>
-                        <tr>
-                            <td class="no-border">MP</td>
-                            <td class="no-border">{{ status.mp }}/{{ status.mp }}</td>
-                        </tr>
-                        -->
                       </table>
                     </div>
                 </div>
@@ -96,7 +90,7 @@
                         </div>
                         <div class="panel-body italics">
 
-    {% crispy form_character %}
+                        {% crispy form_character %}
 
                         </div>
                     </div>

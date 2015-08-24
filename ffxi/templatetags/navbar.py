@@ -28,13 +28,16 @@ def get_characters(user):
     except LinkedAccount.DoesNotExist:
         return None
     
-    q = """SELECT charid, charname FROM chars 
-           WHERE accid IN ({0})""".format(accounts)
-    characters = Chars.objects.using('darkstar').raw(q) 
-    if len(list(characters)) == 0:
+    if len(accounts) == 0:
         return None
     else:
-        chars = {}
-        for character in characters:
-            chars[character.charid] = character.charname
-        return chars
+        q = """SELECT charid, charname FROM chars 
+               WHERE accid IN ({0})""".format(accounts)
+        characters = Chars.objects.using('darkstar').raw(q) 
+        if len(list(characters)) == 0:
+            return None
+        else:
+            chars = {}
+            for character in characters:
+                chars[character.charid] = character.charname
+            return chars

@@ -163,28 +163,28 @@ function set_opacity(field, val) {
     
     switch (field) {
         case 'jumpjacks':
-            status = val / 200;
+            status = val / 100;
             break;
         case 'high_knees':
-            status = val / 100;
-            break;
-        case 'plank_jumps':
             status = val / 50;
             break;
+        case 'plank_jumps':
+            status = val / 25;
+            break;
         case 'pushups':
-            status = val / 100;
+            status = val / 50;
             break;
         case 'climbers':
-            status = val / 100;
+            status = val / 50;
             break;
         case 'knee_pull_ins':
-            status = val / 100;
+            status = val / 50;
             break;
         case 'cross_crunches':
-            status = val / 100;
+            status = val / 50;
             break;
         case 'squats':
-            status = val / 100;
+            status = val / 50;
             break;
     }
 
@@ -197,24 +197,6 @@ function set_opacity(field, val) {
 /* -----------------------------------------------------------------------------
  * /character/{id}/{name}
  * ---------------------------------------------------------------------------*/
-function get_signet_cost(level) {
-    $.ajax({ 
-        type: 'POST',
-        url: '/ajax/get-signet-cost/', 
-        data: {'date':date},
-        dataType: "json",
-        success: function(data) { 
-            console.log(data)
-        },
-        error: function(error){
-            if (error != 'DoesNotExist') {
-                console.log("Error:");
-                console.log(error);
-            }
-        }
-    });
-}
- 
 function disable_input() {
     $('#id_level').attr('readonly', true);
     $('#id_char_cost').attr('readonly', true);
@@ -235,7 +217,9 @@ function init_signet_form(exp, charid, charname) {
             success: function (data) {
                 $("#id_signet_cost").val(0);
                 $('#id_upgrade').attr('min', $('#id_upgrade').val());
+                $("#id_start_upgrade").val($("#id_upgrade").val());
                 var buff = "signet-" + convertToSlug($("#id_signet option:selected").text());
+                $("#"+ buff +" span.level").text($("#id_upgrade").val());
                 set_buff_value(buff, $('#id_upgrade').val());
                 update_exp(data);
                 update_signet_buttons($('#id_upgrade').val());
@@ -324,6 +308,7 @@ function update_signet_buttons(level) {
 function estimate_signet_cost() {
     var start_level = $("#id_start_upgrade").val();
     var final_level = $("#id_upgrade").val();
+    console.log(start_level, final_level);
     $.ajax({ 
         type: 'POST',
         url: '/ajax/get-signet-cost/', 
@@ -336,7 +321,7 @@ function estimate_signet_cost() {
                 json["cost"] = 0
             }
             $("#id_signet_cost").val( numberWithCommas(json["cost"]) );
-            $("#id_start_upgrade").val($("#id_upgrade").val());
+            
             if ( parseInt(json["cost"]) >  $('#current-exp').val()){
                 $('submit.upgrade-submit').attr('disabled', true);
             } else {

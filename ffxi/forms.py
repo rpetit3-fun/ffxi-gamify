@@ -11,6 +11,7 @@ from crispy_forms.layout import *
 from crispy_forms.bootstrap import *
 from registration.forms import RegistrationFormUniqueEmail
 
+from darkstar.models import Chars
 from ffxi.form_constants import *
 from ffxi.models import DailyTasks, LinkedAccount, ExperienceStats
 from darkstar.models import Accounts, CharVars
@@ -95,6 +96,15 @@ class LinkAccountForm(forms.Form):
     login = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput())
     
+    def __init__(self, *args, **kwargs):
+        super(LinkAccountForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = 'link-account'
+        self.helper.form_method = 'post'
+        self.helper.form_action = 'submit_account'
+
+        self.helper.add_input(Submit('submit', 'Link Account!', css_class='btn-md pull-right level-submit'))
+    
     def is_valid(self):
         valid = super(LinkAccountForm, self).is_valid()
         
@@ -117,16 +127,33 @@ class LinkAccountForm(forms.Form):
 
     def save(self, user, POST):
         try:
+            # Check if more that two accounts exists
+            if LinkedAccount.objects.filter(user=user).count() < 3:
+                exp = ExperienceStats.objects.get(user=user)
+                exp.exp = exp.exp + 100000
+                exp.save()
+                
             linked_account = LinkedAccount(
                 user=user, 
                 acc_id=self.account.id, 
                 name=self.account.login
             )
-            
-            return linked_account.save()
+            linked_account.save()
+
+            cursor = connections['darkstar'].cursor()
+            q = """SELECT charid, charname FROM chars 
+                   WHERE accid={0} LIMIT 1""".format(self.account.id)
+            cursor.execute(q)
+            character = cursor.fetchone()
+            if len(character) == 0:
+                return [False, linked_account]
+            else:
+                return [True, {'charid':character[0], 'charname':character[1]}]
         except IntegrityError:
             self._errors['save_failed'] = 'Failed to save the account to the database'
-            return False
+            return [False]
+            
+
 
 class CharacterUpgradeForm(forms.Form):
     def get_job_levels(self):
