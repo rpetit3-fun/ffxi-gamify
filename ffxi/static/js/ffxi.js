@@ -356,6 +356,7 @@ function init_level_form(exp, charid, charname) {
             success: function (data) {
                 $("#id_char_cost").val(0);
                 $('#id_level').attr('min', $('#id_level').val());
+                $("#id_start_level").val($("#id_level").val());
                 var job = $("#id_jobs option:selected").text();
                 $("td.job-"+ convertToSlug(job)).text($('#id_level').val());
                 
@@ -457,8 +458,9 @@ function estimate_level_cost() {
             if (json["cost"] == "None") {
                 json["cost"] = 0
             }
+            
             $("#id_char_cost").val( numberWithCommas(json["cost"]) );
-            $("#id_start_level").val($("#id_level").val());
+            
             if ( parseInt(json["cost"]) > $('#current-exp').val()){
                 console.log("in here");
                 $('#submit-id-submit.level-submit').attr('disabled', true);
