@@ -21,8 +21,9 @@ class Command(BaseCommand):
         yesterday = datetime.strftime(yesterday, "%Y-%m-%d")
 
         for user in User.objects.all():
-            self.update_steps(user, yesterday)
-            self.daily_task_exp(user, yesterday)
+            if user.username == 'rpetit3':
+                self.update_steps(user, yesterday)
+                self.daily_task_exp(user, yesterday)
                 
     def update_steps(self, user, date):
         cmd = ['python', '/home/rpetit/fitbit-steps/fitbit-steps.py',

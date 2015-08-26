@@ -32,13 +32,13 @@ class DailyTasksForm(forms.ModelForm):
         self.helper.form_class = 'input-lg'
         self.helper.form_action = ''
         
-        fields = ['jumpjacks', 'high_knees', 'plank_jumps', 
-                  'pushups', 'squats', 'climbers', 'knee_pull_ins', 
-                  'cross_crunches', 'date']
-        
+        self.fields['estimated_exp'] = forms.IntegerField(
+            label = "Estimated EXP Gain",
+        )
         self.helper.layout = Layout(
             Div(
-                'jumpjacks', 'high_knees', 'plank_jumps', 'pushups',
+                'jumpjacks', 'high_knees', 'plank_jumps', 'pushups', 
+                'estimated_exp',
                 css_class=css
             ),
             Div(
@@ -73,9 +73,8 @@ class DailyTasksForm(forms.ModelForm):
 
     class Meta:
         model = DailyTasks
-        fields = ['jumpjacks', 'high_knees', 'plank_jumps', 
-                  'pushups', 'squats', 'climbers', 'knee_pull_ins', 
-                  'cross_crunches', 'date']
+        fields = ['jumpjacks', 'high_knees', 'plank_jumps', 'pushups', 'squats',
+                  'climbers', 'knee_pull_ins', 'cross_crunches', 'date']
         labels = {
             # Cardio
             'jumpjacks': _('Jumping Jacks'),

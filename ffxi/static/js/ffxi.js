@@ -35,7 +35,6 @@ function init_datepicker() {
         }
     });
     $('#datepicker').datepicker('setDate', today);
-
 }
 
 function init_stats_form() {
@@ -55,25 +54,11 @@ function init_stats_form() {
         });
         return false;
     });
-    
-    var step_btn = $('#update_steps');
-    step_btn.click(function() {
-        var date = $('#id_date').val();
-        $.ajax({
-            type: 'POST',
-            url: '/ajax/update-steps/',
-            data: "date="+date,
-            success: function (data) {
-                get_daily_stats(date);
-                console.log(data);
-            },
-            error: function(data) {
-                console.log(data);
-            }
-        });
-        return false;
-    });
+
+    $('#id_estimated_exp').attr('readonly', true);
+    $("#div_id_estimated_exp label").css('color', '#01FF4E');
 }
+
 function get_daily_stats(date) {
     $.ajax({ 
         type: 'POST',
@@ -81,11 +66,12 @@ function get_daily_stats(date) {
         data: {'date':date},
         dataType: "json",
         success: function(data) { 
-            var json = $.parseJSON(data);
+            var json = data;
             var field = json[0].fields;
             exp_chain = 0;
             update_stats(field, date);
             $('#id_date').val(date);
+            $('#id_estimated_exp').val(json[0].estimated_exp * parseFloat($('#exp-chain').text()));
         },
         error: function(error){
             if (error != 'DoesNotExist') {

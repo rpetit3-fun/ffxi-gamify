@@ -21,7 +21,33 @@ def get_daily_stats(request):
                 user=request.user,
                 date=datetime.strptime(request.POST['date'], "%Y-%m-%d")
             )
-        data = serializers.serialize('json', [dailytasks])
+        
+        estimated_exp = sum([
+            dailytasks.jumpjacks * 3,
+            dailytasks.high_knees * 3,
+            dailytasks.knee_pull_ins * 3,
+            dailytasks.cross_crunches * 3,
+            dailytasks.pushups * 3,
+            dailytasks.squats * 3,
+            dailytasks.climbers * 5,
+            dailytasks.plank_jumps * 5
+        ]) 
+        
+        data = [{
+            'pk': dailytasks.pk,
+            'estimated_exp': estimated_exp,
+            'fields': {
+                'jumpjacks': dailytasks.jumpjacks,
+                'high_knees': dailytasks.high_knees,
+                'knee_pull_ins': dailytasks.knee_pull_ins,
+                'cross_crunches': dailytasks.cross_crunches,
+                'pushups': dailytasks.pushups,
+                'squats': dailytasks.squats,
+                'climbers': dailytasks.climbers,
+                'plank_jumps': dailytasks.plank_jumps
+            }
+        }]
+
         return HttpResponse(json.dumps(data), "application/json")
     return HttpResponseRedirect('/daily-tasks/')
 
