@@ -1,9 +1,8 @@
 {% url 'home' as home %}
 {% url 'daily_tasks' as daily_task %}
 {% url 'characters' as characters %}
-{% url 'missions' as missions %}
-{% url 'quests' as quests %}
-{% url 'rewards' as rewards %}
+{% url 'record_feats' as record_feats %}
+{% url 'ub3r1337_rank' as ub3r1337_rank %}
 {% load navbar %}
 {% load staticfiles %}
 
@@ -29,9 +28,9 @@
                  </li>
                  
             {% endif %}
-
-            
-            <li class="{% active request daily_task %}"><a href="/daily-tasks/">Daily Tasks</a></li>
+            <li class="{% active request daily_tally %}"><a href="/daily-tally/">Daily Tally</a></li>
+            <li class="{% active request record_feats %}"><a href="/record-feats/">Record Feats</a></li>
+            <li class="{% active request ub3r1337_rank %}"><a href="/ub3r1337-rank/">Ub3r1337 Rank</a></li>
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" 
                    aria-haspopup="true" aria-expanded="false">
@@ -45,26 +44,6 @@
                     <li><a href="/accounts/logout/">Sign Out</a></li>
                 </ul>
              </li>
-            <!--
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" 
-                   aria-haspopup="true" aria-expanded="false">
-                    Shop
-                    <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                    {% if characters %}
-                        <li><a href="/shop/character-upgrades/">Character Upgrades</a></li>
-                    {% endif %}
-                    <li><a href="/shop/system-upgrades/">System Upgrades</a></li>
-                    <li><a href="/shop/weapons/">Weapons</a></li>
-                </ul>
-             </li>
-            
-            <li class="{% active request missions %} disabled"><a href="/missions/">Missions</a></li>
-            <li class="{% active request quests %} disabled"><a href="/quests/">Quests</a></li>
-            <li class="{% active request rewards %} disabled"><a href="/rewards/">Rewards</a></li>
-            -->
         {% else %}
             <li><a href="/accounts/login/">Sign In</a></li>
         {% endif %}

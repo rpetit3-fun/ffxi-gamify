@@ -6,45 +6,45 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User
 
-from ffxi.models import DailyTasks, EnhancedSignetLevels
+from ffxi.models import DailyTally, EnhancedSignetLevels
 
 @csrf_exempt
 def get_daily_stats(request):
     if request.POST and request.is_ajax():
-        dailytasks = None
+        dt = None
         data = None
         try:
-            dailytasks = DailyTasks.objects.get(user=request.user,
+            dt = DailyTally.objects.get(user=request.user,
                                                 date=request.POST['date'])
-        except DailyTasks.DoesNotExist:
-            dailytasks = DailyTasks.objects.create(
+        except DailyTally.DoesNotExist:
+            dt = DailyTally.objects.create(
                 user=request.user,
                 date=datetime.strptime(request.POST['date'], "%Y-%m-%d")
             )
         
         estimated_exp = sum([
-            dailytasks.jumpjacks * 3,
-            dailytasks.high_knees * 3,
-            dailytasks.knee_pull_ins * 3,
-            dailytasks.cross_crunches * 3,
-            dailytasks.pushups * 3,
-            dailytasks.squats * 3,
-            dailytasks.climbers * 5,
-            dailytasks.plank_jumps * 5
+            dt.jumpjacks * 3,
+            dt.high_knees * 3,
+            dt.knee_pull_ins * 3,
+            dt.cross_crunches * 3,
+            dt.pushups * 3,
+            dt.squats * 3,
+            dt.climbers * 5,
+            dt.plank_jumps * 5
         ]) 
         
         data = [{
-            'pk': dailytasks.pk,
+            'pk': dt.pk,
             'estimated_exp': estimated_exp,
             'fields': {
-                'jumpjacks': dailytasks.jumpjacks,
-                'high_knees': dailytasks.high_knees,
-                'knee_pull_ins': dailytasks.knee_pull_ins,
-                'cross_crunches': dailytasks.cross_crunches,
-                'pushups': dailytasks.pushups,
-                'squats': dailytasks.squats,
-                'climbers': dailytasks.climbers,
-                'plank_jumps': dailytasks.plank_jumps
+                'jumpjacks': dt.jumpjacks,
+                'high_knees': dt.high_knees,
+                'knee_pull_ins': dt.knee_pull_ins,
+                'cross_crunches': dt.cross_crunches,
+                'pushups': dt.pushups,
+                'squats': dt.squats,
+                'climbers': dt.climbers,
+                'plank_jumps': dt.plank_jumps
             }
         }]
 
@@ -64,12 +64,12 @@ def update_steps(request):
 @csrf_exempt
 def add_exp_chain(request):
     if request.POST and request.is_ajax():
-        dailytasks = DailyTasks.objects.get(user=request.user,
+        dt = DailyTally.objects.get(user=request.user,
                                             date=request.POST['date'])
-        dailytasks.chain = True;
-        saved = dailytasks.save();
+        dt.chain = True;
+        saved = dt.save();
   
-        data = serializers.serialize('json', [dailytasks])
+        data = serializers.serialize('json', [dt])
         return HttpResponse(json.dumps(data), "application/json")
     return HttpResponseRedirect('/daily-tasks/')
     

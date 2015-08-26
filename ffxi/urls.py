@@ -21,7 +21,7 @@ urlpatterns = [
     # ffxi-gamify:
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', 'ffxi.views.index', name='home'),
-    url(r'^daily-tasks/', 'ffxi.views.daily_tasks', name='daily_tasks'),
+    url(r'^daily-tally/', 'ffxi.views.daily_tally', name='daily_tally'),
     url(r'^link-account/', 'ffxi.views.link_account', name='link_account'),
     url(r'^missions/', 'ffxi.views.missions', name='missions'),
     url(r'^quests/', 'ffxi.views.quests', name='quests'),

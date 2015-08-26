@@ -38,12 +38,12 @@ function init_datepicker() {
 }
 
 function init_stats_form() {
-    var frm = $('#save-daily-task');
+    var frm = $('#save-daily-tally');
 
     frm.submit(function () {
         $.ajax({
             type: 'POST',
-            url: '/daily-tasks/',
+            url: '/daily-tally/',
             data: frm.serialize(),
             success: function (data) {
                 get_daily_stats($('#id_date').val());

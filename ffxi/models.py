@@ -2,7 +2,7 @@ from datetime import date
 from django.db import models
 from django.contrib.auth.models import User
 
-class DailyTasks(models.Model):
+class DailyTally(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateField(default=date.today().strftime("%Y-%m-%d"))
     steps = models.PositiveIntegerField(default=0)

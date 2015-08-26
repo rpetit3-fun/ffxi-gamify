@@ -13,30 +13,29 @@ from registration.forms import RegistrationFormUniqueEmail
 
 from darkstar.models import Chars
 from ffxi.form_constants import *
-from ffxi.models import DailyTasks, LinkedAccount, ExperienceStats
+from ffxi.models import DailyTally, LinkedAccount, ExperienceStats
 from darkstar.models import Accounts, CharVars
 
 class RegistrationFormWithName(RegistrationFormUniqueEmail):
     first_name = forms.CharField(max_length=50, label='First Name')
     last_name = forms.CharField(max_length=50, label='Last Name')
 
-class DailyTasksForm(forms.ModelForm):
+class DailyTallyForm(forms.ModelForm):
     estimated_exp = forms.CharField(
         label = "Estimated EXP Gain",
     )
 
     def __init__(self, *args, **kwargs):
-        super(DailyTasksForm, self).__init__(*args, **kwargs)
+        super(DailyTallyForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.add_input(Submit('submit', 'Save'))
         css = 'col-sm-6'
         self.helper = FormHelper()
         self.helper.form_method = 'POST'
-        self.helper.form_id = 'save-daily-task'
+        self.helper.form_id = 'save-daily-tally'
         self.helper.form_class = 'input-lg'
         self.helper.form_action = ''
 
-        
         self.helper.layout = Layout(
             Div(
                 'jumpjacks', 'high_knees', 'plank_jumps', 'pushups', 
@@ -58,23 +57,23 @@ class DailyTasksForm(forms.ModelForm):
     def save(self, user, POST):
         try:
             # Exists so lets update
-            dailytasks = DailyTasks.objects.get(user=user, date=POST['date'])
-            dailytasks.jumpjacks = POST['jumpjacks']
-            dailytasks.high_knees = POST['high_knees']
-            dailytasks.plank_jumps = POST['plank_jumps']
-            dailytasks.pushups = POST['pushups']
-            dailytasks.squats = POST['squats']
-            dailytasks.climbers = POST['climbers']
-            dailytasks.knee_pull_ins = POST['knee_pull_ins']
-            dailytasks.cross_crunches = POST['cross_crunches']
-            return dailytasks.save()
-        except DailyTasks.DoesNotExists:
+            dt = DailyTally.objects.get(user=user, date=POST['date'])
+            dt.jumpjacks = POST['jumpjacks']
+            dt.high_knees = POST['high_knees']
+            dt.plank_jumps = POST['plank_jumps']
+            dt.pushups = POST['pushups']
+            dt.squats = POST['squats']
+            dt.climbers = POST['climbers']
+            dt.knee_pull_ins = POST['knee_pull_ins']
+            dt.cross_crunches = POST['cross_crunches']
+            return dt.save()
+        except DailyTally.DoesNotExists:
             # Does not exist so lets create
-            dailytasks = DailyTasks(user=user, **POST)
-            return dailytasks.save()
+            dt = dt(user=user, **POST)
+            return dt.save()
 
     class Meta:
-        model = DailyTasks
+        model = DailyTally
         fields = ['jumpjacks', 'high_knees', 'plank_jumps', 'pushups', 'squats',
                   'climbers', 'knee_pull_ins', 'cross_crunches', 'date']
         labels = {
@@ -128,8 +127,8 @@ class LinkAccountForm(forms.Form):
 
     def save(self, user, POST):
         try:
-            # Check if more that two accounts exists
-            if LinkedAccount.objects.filter(user=user).count() < 3:
+            # Check if more that 6 accounts exists
+            if LinkedAccount.objects.filter(user=user).count() < 7:
                 exp = ExperienceStats.objects.get(user=user)
                 exp.exp = exp.exp + 100000
                 exp.save()

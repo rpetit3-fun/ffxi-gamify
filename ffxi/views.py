@@ -5,28 +5,28 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.models import User
 
-from ffxi.forms import DailyTasksForm, LinkAccountForm, CharacterUpgradeForm, EnhancedSignetUpgrade
-from ffxi.models import DailyTasks, LinkedAccount
+from ffxi.forms import DailyTallyForm, LinkAccountForm, CharacterUpgradeForm, EnhancedSignetUpgrade
+from ffxi.models import DailyTally, LinkedAccount
 
 def index(request):
     return render_to_response('index.html', {}, RequestContext(request))
     
-def daily_tasks(request):
+def daily_tally(request):
     if request.user.is_authenticated():
         if request.POST:
-            form = DailyTasksForm(request.POST)
+            form = DailyTallyForm(request.POST)
             if form.is_valid():
-                dailytasks = form.save(request.user, request.POST)
+                dt = form.save(request.user, request.POST)
                 if request.is_ajax():
                     return HttpResponse('saved')
                 else:
-                    return HttpResponseRedirect('/daily-tasks/')
+                    return HttpResponseRedirect('/daily-tally/')
             else:
                 if request.is_ajax():
                     return HttpResponse(form.errors)
         else:
-            form = DailyTasksForm()
-            return render_to_response('daily_tasks.html', {'form': form}, RequestContext(request))
+            form = DailyTallyForm()
+            return render_to_response('daily_tally.html', {'form': form}, RequestContext(request))
     else:
         return HttpResponseRedirect('/')
 
