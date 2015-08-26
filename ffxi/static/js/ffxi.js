@@ -39,14 +39,14 @@ function init_datepicker() {
 
 function init_stats_form() {
     var frm = $('#save-daily-task');
+
     frm.submit(function () {
         $.ajax({
             type: 'POST',
             url: '/daily-tasks/',
-            data: frm.serialize()+"&steps="+$('#id_steps').val(),
+            data: frm.serialize(),
             success: function (data) {
                 get_daily_stats($('#id_date').val());
-                console.log(data);
             },
             error: function(data) {
                 console.log(data);
@@ -71,7 +71,9 @@ function get_daily_stats(date) {
             exp_chain = 0;
             update_stats(field, date);
             $('#id_date').val(date);
-            $('#id_estimated_exp').val(json[0].estimated_exp * parseFloat($('#exp-chain').text()));
+            $('#id_estimated_exp').val(parseInt(
+                json[0].estimated_exp * parseFloat($('#exp-chain').text())
+            ));
         },
         error: function(error){
             if (error != 'DoesNotExist') {

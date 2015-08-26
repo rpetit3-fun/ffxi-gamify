@@ -21,6 +21,10 @@ class RegistrationFormWithName(RegistrationFormUniqueEmail):
     last_name = forms.CharField(max_length=50, label='Last Name')
 
 class DailyTasksForm(forms.ModelForm):
+    estimated_exp = forms.CharField(
+        label = "Estimated EXP Gain",
+    )
+
     def __init__(self, *args, **kwargs):
         super(DailyTasksForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
@@ -31,10 +35,8 @@ class DailyTasksForm(forms.ModelForm):
         self.helper.form_id = 'save-daily-task'
         self.helper.form_class = 'input-lg'
         self.helper.form_action = ''
+
         
-        self.fields['estimated_exp'] = forms.IntegerField(
-            label = "Estimated EXP Gain",
-        )
         self.helper.layout = Layout(
             Div(
                 'jumpjacks', 'high_knees', 'plank_jumps', 'pushups', 
