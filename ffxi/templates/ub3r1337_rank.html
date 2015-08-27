@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block container %}
+<div class="row">
+    <div class="col-sm-12 col-md-12">
+        <div class="row no-margin">
+            <!-- First Column -->
+            <div class="col-xs-12 col-md-4">
+                <div class="row no-margin">
+                    <div class="panel panel-default no-border">
+                      <div class="panel-heading italics">
+                        <h3 class="panel-title">Ub3r1337 Rank</h3>
+                     </div>
+                    </div>
+                </div>
+                <div class="row no-margin">
+                    <div class="panel panel-default no-border">
+                      <div class="panel-heading italics">
+                        <h3 class="panel-title">Bonus Stats</h3>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Second Column -->
+            <div class="col-xs-12 col-md-8">
+                <div class="row no-margin">
+                    <div class="panel panel-default no-border">
+                        <!-- Default panel contents -->
+                        <div class="panel-heading italics">
+                            <h3 class="panel-title">Challenges [Category]</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static "/static/js/ffxi.js" %}"></script>
+{% endblock %}

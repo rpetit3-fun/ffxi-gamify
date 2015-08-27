@@ -23,9 +23,8 @@ urlpatterns = [
     url(r'^$', 'ffxi.views.index', name='home'),
     url(r'^daily-tally/', 'ffxi.views.daily_tally', name='daily_tally'),
     url(r'^link-account/', 'ffxi.views.link_account', name='link_account'),
-    url(r'^missions/', 'ffxi.views.missions', name='missions'),
-    url(r'^quests/', 'ffxi.views.quests', name='quests'),
-    url(r'^rewards/', 'ffxi.views.rewards', name='rewards'),
+    url(r'^record-feats/', 'ffxi.views.record_feats', name='record_feats'),
+    url(r'^ub3r1337-rank/', 'ffxi.views.ub3r1337_rank', name='ub3r1337_rank'),
     url(r'^character/(?P<charid>\d+)/(?P<charname>.+)/$', 'ffxi.views.character', name='character'),
     
     # django-email-changer

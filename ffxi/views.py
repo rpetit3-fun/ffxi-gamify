@@ -91,12 +91,12 @@ def character(request, charid, charname):
         return HttpResponseRedirect('/')
 
         
-def missions(request):
-    return render_to_response('missions.html', {}, RequestContext(request))
+def record_feats(request):
+    return render_to_response('record_feats.html', {}, RequestContext(request))
 
 
-def quests(request):
-    return render_to_response('quests.html', {}, RequestContext(request))
+def ub3r1337_rank(request):
+    return render_to_response('ub3r1337_rank.html', {}, RequestContext(request))
 
 
 def rewards(request):
