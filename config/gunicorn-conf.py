@@ -7,7 +7,7 @@ timeout = 30
 keepalive = 2
 
 loglevel = 'info'
-errorlog = '/home/rpetit/ffxi-gamify/logs/gunicorn_error.log'
-accesslog = '/home/rpetit/ffxi-gamify/logs/gunicorn_access.log'
+errorlog = '/home/rpetit/repos/ffxi-gamify/logs/gunicorn_error.log'
+accesslog = '/home/rpetit/repos/ffxi-gamify/logs/gunicorn_access.log'
 
 preload = True
