@@ -10,7 +10,7 @@ from datetime import date, datetime, timedelta
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth.models import User
 
-from ffxi.models import DailyTasks, ExperienceStats, ExperienceHistory
+from ffxi.models import DailyTally, ExperienceStats, ExperienceHistory
 
 class Command(BaseCommand):
     help = 'Calculate experience points for yesterday.'
@@ -33,18 +33,18 @@ class Command(BaseCommand):
         steps, error = p.communicate()
 
         try:
-            dailytasks = DailyTasks.objects.get(user=user,
+            dt = DailyTally.objects.get(user=user,
                                                 date=date)
-            dailytasks.steps = int(steps)
-            dailytasks.save()
-        except DailyTasks.DoesNotExist:
-            dailytasks = DailyTasks.objects.create(user=user,
+            dt.steps = int(steps)
+            dt.save()
+        except DailyTally.DoesNotExist:
+            dt = DailyTally.objects.create(user=user,
                                                    date=date,
                                                    steps=int(steps))
-            dailytasks.save()
+            dt.save()
     
     def daily_task_exp(self, user, date):
-        dt = DailyTasks.objects.get(user=user, date=date)
+        dt = DailyTally.objects.get(user=user, date=date)
         current_exp_chain = None
         total_exp = 0.0
         if dt.chain:
