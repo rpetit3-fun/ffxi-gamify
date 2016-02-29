@@ -21,7 +21,7 @@ ALLOWED_HOSTS = []
 SITE_ID = 1
 
 '''-----------------------------------------------------------------------------
-Applications 
+Applications
 -----------------------------------------------------------------------------'''
 INSTALLED_APPS = (
     'django.contrib.sites',
@@ -47,7 +47,7 @@ INSTALLED_APPS = (
 ACCOUNT_ACTIVATION_DAYS = 7
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
-# django_email_changer 
+# django_email_changer
 EMAIL_CHANGE_NOTIFICATION_SUBJECT = '[Email Update] - Please verify FFXI Gamify email update'
 EMAIL_CHANGE_NOTIFICATION_FROM = "FFXI Gamify's Friendly Robot <ffxi.gamify@gmail.com>"
 
@@ -78,7 +78,7 @@ DEFAULT_FROM_EMAIL = "FFXI Gamify's Friendly Robot <ffxi.gamify@gmail.com>"
 LOGIN_URL = '/accounts/login/'
 
 '''-----------------------------------------------------------------------------
-Middleware 
+Middleware
 -----------------------------------------------------------------------------'''
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -91,7 +91,7 @@ MIDDLEWARE_CLASSES = (
 )
 
 '''-----------------------------------------------------------------------------
-Template 
+Template
 -----------------------------------------------------------------------------'''
 TEMPLATES = [
     {
@@ -134,12 +134,12 @@ STATICFILES_FINDERS = (
 )
 
 '''-----------------------------------------------------------------------------
-Database 
+Database
 https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 -----------------------------------------------------------------------------'''
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', 
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'ffxi_gamify',
         'USER': 'ffxi_gamify',
         'PASSWORD': 'ffxi_gamify',
@@ -155,4 +155,3 @@ DATABASES = {
         'PORT': '3306',
     }
 }
-

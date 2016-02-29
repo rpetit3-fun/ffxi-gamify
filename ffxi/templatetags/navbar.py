@@ -10,6 +10,7 @@ def active(request, pattern):
         return 'active'
     return '{0}+{1}'.format(pattern, request.path)
 
+
 @register.assignment_tag
 def get_exp_stats(user):
     try:
@@ -19,21 +20,24 @@ def get_exp_stats(user):
         exp_stats.save()
 
     return {'exp': "{:,}".format(exp_stats.exp), 'chain': exp_stats.chain}
-    
+
+
 @register.assignment_tag
 def get_characters(user):
     try:
-        accounts = LinkedAccount.objects.filter(user=user).values_list('acc_id', flat=True) 
+        accounts = LinkedAccount.objects.filter(user=user).values_list(
+            'acc_id', flat=True
+        )
         accounts = ','.join(["'" + str(id) + "'" for id in accounts])
     except LinkedAccount.DoesNotExist:
         return None
-    
+
     if len(accounts) == 0:
         return None
     else:
-        q = """SELECT charid, charname FROM chars 
+        q = """SELECT charid, charname FROM chars
                WHERE accid IN ({0})""".format(accounts)
-        characters = Chars.objects.using('darkstar').raw(q) 
+        characters = Chars.objects.using('darkstar').raw(q)
         if len(list(characters)) == 0:
             return None
         else:

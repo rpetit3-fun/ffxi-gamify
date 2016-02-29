@@ -13,13 +13,13 @@
  }
 
 var exp_chain = 0;
- 
+
 function init_datepicker() {
     var date = new Date();
     var today = date.getFullYear() + '-' +  (date.getMonth() + 1) + '-' + date.getDate();
     var previous_date = today;
     get_daily_stats(today);
-    
+
     $('#datepicker').datepicker({
         format: 'yyyy-mm-dd',
         startDate: "2014-10-13",
@@ -60,12 +60,12 @@ function init_stats_form() {
 }
 
 function get_daily_stats(date) {
-    $.ajax({ 
+    $.ajax({
         type: 'POST',
-        url: '/ajax/get-daily-stats/', 
+        url: '/ajax/get-daily-stats/',
         data: {'date':date},
         dataType: "json",
-        success: function(data) { 
+        success: function(data) {
             var json = data;
             var field = json[0].fields;
             exp_chain = 0;
@@ -86,12 +86,12 @@ function get_daily_stats(date) {
 
 function get_current_exp_chain(){
     var today = date.getFullYear() + '-' +  (date.getMonth() + 1) + '-' + date.getDate();
-    $.ajax({ 
+    $.ajax({
         type: 'POST',
-        url: '/ajax/get-current-exp-chain/', 
+        url: '/ajax/get-current-exp-chain/',
         data: {'date':date},
         dataType: "json",
-        success: function(data) { 
+        success: function(data) {
             console.log(data)
         },
         error: function(error){
@@ -104,12 +104,12 @@ function get_current_exp_chain(){
 }
 
 function add_exp_chain(date){
-    $.ajax({ 
+    $.ajax({
         type: 'POST',
-        url: '/ajax/add-exp-chain/', 
+        url: '/ajax/add-exp-chain/',
         data: {'date':date},
         dataType: "json",
-        success: function(data) { 
+        success: function(data) {
             var json = $.parseJSON(data);
             console.log(data);
         },
@@ -148,7 +148,7 @@ function update_stats(field, date) {
 
 function set_opacity(field, val) {
     var status = false;
-    
+
     switch (field) {
         case 'jumpjacks':
             status = val / 100;
@@ -194,7 +194,7 @@ function disable_input() {
     $('#id_signet_cost').attr('readonly', true);
     $('#id_signet_exp').attr('readonly', true);
 }
- 
+
 function init_signet_form(exp, charid, charname) {
     var frm = $('#signet-upgrade');
     frm.submit(function () {
@@ -224,16 +224,16 @@ function init_signet_form(exp, charid, charname) {
     $('#id_signet').change(function() {
         set_signet_level();
     });
-    
+
     $("button.buff-down").click(function(){
-        var level = parseInt($("#id_upgrade").val()) - 1; 
+        var level = parseInt($("#id_upgrade").val()) - 1;
         if (level < $('#id_upgrade').attr('min')) {
             level = $('#id_upgrade').attr('min')
         }
         $("#id_upgrade").val(level)
         estimate_signet_cost();
-    }); 
-    
+    });
+
     $("button.buff-up").click(function(){
         var level = parseInt($("#id_upgrade").val()) + 1;
         if (level > $('#id_upgrade').attr('max')) {
@@ -241,10 +241,10 @@ function init_signet_form(exp, charid, charname) {
         }
         $("#id_upgrade").val(level)
         estimate_signet_cost();
-    }); 
+    });
     $('#id_upgrade').attr('max', 30);
     set_signet_level();
-    
+
     // set buff values
     $("td[id^=signet").each(function() {
         var id = $(this).attr("id");
@@ -254,7 +254,7 @@ function init_signet_form(exp, charid, charname) {
 
 function set_buff_value(buff, val) {
     var multiplier = 1;
-    
+
     switch (buff) {
         case 'signet-defense':
         case 'signet-evasion':
@@ -280,7 +280,7 @@ function set_signet_level() {
     $("#id_signet_cost").val(0);
     update_signet_buttons(level);
 }
- 
+
 function update_signet_buttons(level) {
     if (level == 30) {
         $('button.buff-down').attr('disabled', true);
@@ -297,25 +297,25 @@ function estimate_signet_cost() {
     var start_level = $("#id_start_upgrade").val();
     var final_level = $("#id_upgrade").val();
     console.log(start_level, final_level);
-    $.ajax({ 
+    $.ajax({
         type: 'POST',
-        url: '/ajax/get-signet-cost/', 
+        url: '/ajax/get-signet-cost/',
         data: {'start_level':start_level, 'final_level': final_level},
         dataType: "text",
-        success: function(data) { 
+        success: function(data) {
             console.log(start_level, final_level, data,  $('#current-exp').val());
             var json = $.parseJSON(data);
             if (json["cost"] == "None") {
                 json["cost"] = 0
             }
             $("#id_signet_cost").val( numberWithCommas(json["cost"]) );
-            
+
             if ( parseInt(json["cost"]) >  $('#current-exp').val()){
-                $('submit.upgrade-submit').attr('disabled', true);
+                $('#submit-id-submit.upgrade-submit').attr('disabled', true);
             } else {
-                $('submit.upgrade-submit').removeAttr('disabled');
+                $('#submit-id-submit.upgrade-submit').removeAttr('disabled');
             }
-            
+
         },
         error: function(error){
             if (error != 'DoesNotExist') {
@@ -333,7 +333,7 @@ function update_exp(exp) {
     $('#id_signet_exp').val(exp);
     $('#char-exp').text(exp);
 }
- 
+
 function init_level_form(exp, charid, charname) {
     var frm = $('#character-upgrade');
     frm.submit(function () {
@@ -347,7 +347,7 @@ function init_level_form(exp, charid, charname) {
                 $("#id_start_level").val($("#id_level").val());
                 var job = $("#id_jobs option:selected").text();
                 $("td.job-"+ convertToSlug(job)).text($('#id_level').val());
-                
+
                 update_level_buttons($('#id_level').val());
                 update_exp(data);
                 console.log(data);
@@ -363,16 +363,16 @@ function init_level_form(exp, charid, charname) {
     $('#id_jobs').change(function() {
         set_job_level();
     });
-    
+
     $("button.level-down").click(function(){
-        var level = parseInt($("#id_level").val()) - 1; 
+        var level = parseInt($("#id_level").val()) - 1;
         if (level < $('#id_level').attr('min')) {
             level = $('#id_level').attr('min')
         }
         $("#id_level").val(level)
         estimate_level_cost();
-    }); 
-    
+    });
+
     $("button.level-up").click(function(){
         var level = parseInt($("#id_level").val()) + 1;
         if (level > $('#id_level').attr('max')) {
@@ -380,12 +380,12 @@ function init_level_form(exp, charid, charname) {
         }
         $("#id_level").val(level)
         estimate_level_cost();
-    }); 
-    
+    });
+
     set_job_level();
     get_max_level(charid);
 }
- 
+
 function set_job_level() {
     var job = $("#id_jobs option:selected").text();
     var level = $("td.job-"+ convertToSlug(job)).text();
@@ -395,7 +395,7 @@ function set_job_level() {
     $("#id_char_cost").val(0);
     update_level_buttons(level);
 }
- 
+
 function update_level_buttons(level) {
     if (level == $('#id_level').attr('max')) {
         $('button.level-down').attr('disabled', true);
@@ -407,18 +407,18 @@ function update_level_buttons(level) {
         $('#submit-id-submit.level-submit').removeAttr('disabled');
     }
 }
- 
+
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 function get_max_level(charid) {
-    $.ajax({ 
+    $.ajax({
         type: 'POST',
-        url: '/ajax/get-max-level/', 
+        url: '/ajax/get-max-level/',
         data: {'charid':charid},
         dataType: "text",
-        success: function(data) { 
+        success: function(data) {
             console.log(data, exp);
             var json = $.parseJSON(data);
             $('#id_level').attr('max', json["genkai"]);
@@ -435,27 +435,27 @@ function get_max_level(charid) {
 function estimate_level_cost() {
     var start_level = $("#id_start_level").val();
     var final_level = $("#id_level").val();
-    $.ajax({ 
+    $.ajax({
         type: 'POST',
-        url: '/ajax/get-level-cost/', 
+        url: '/ajax/get-level-cost/',
         data: {'start_level':start_level, 'final_level': final_level},
         dataType: "text",
-        success: function(data) { 
+        success: function(data) {
             console.log(start_level, final_level, data,  $('#current-exp').val());
             var json = $.parseJSON(data);
             if (json["cost"] == "None") {
                 json["cost"] = 0
             }
-            
+
             $("#id_char_cost").val( numberWithCommas(json["cost"]) );
-            
+
             if ( parseInt(json["cost"]) > $('#current-exp').val()){
                 console.log("in here");
                 $('#submit-id-submit.level-submit').attr('disabled', true);
             } else {
                 $('#submit-id-submit.level-submit').removeAttr('disabled');
             }
-            
+
         },
         error: function(error){
             if (error != 'DoesNotExist') {

@@ -21,9 +21,8 @@ function onTrigger(player)
         player:addMod(MOD_ATTP, player:getVar("[SIGNET]Attack") * 5);
         player:addMod(MOD_REGEN, player:getVar("[SIGNET]Regen"));
         player:addMod(MOD_REFRESH, player:getVar("[SIGNET]Refresh"));
-        player:addMod(MOD_REGAIN, player:getVar("[SIGNET]Regain") * 2);
-
-
+        player:addMod(MOD_REGAIN, player:getVar("[SIGNET]Regain") * 3);
+        player:addStatusEffect(EFFECT_DEDICATION,1000,0,86400,0,30000);
     else
         -- off
         player:setVar("Signet++", 0);
@@ -35,6 +34,7 @@ function onTrigger(player)
         player:delMod(MOD_ATTP, player:getVar("[SIGNET]Attack") * 5);
         player:delMod(MOD_REGEN, player:getVar("[SIGNET]Regen"));
         player:delMod(MOD_REFRESH, player:getVar("[SIGNET]Refresh"));
-        player:delMod(MOD_REGAIN, player:getVar("[SIGNET]Regain") * 2);
+        player:delMod(MOD_REGAIN, player:getVar("[SIGNET]Regain") * 3);
+        player:delStatusEffect(EFFECT_DEDICATION);
     end
 end

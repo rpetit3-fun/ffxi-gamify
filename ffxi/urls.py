@@ -17,7 +17,7 @@ urlpatterns = [
     url(r'^ajax/get-signet-cost/', 'ffxi.ajax.get_signet_cost', name='get_signet_cost'),
     url(r'^ajax/get-level-cost/', 'ffxi.ajax.get_level_cost', name='get_level_cost'),
     url(r'^ajax/get-max-level/', 'ffxi.ajax.get_max_level', name='get_max_level'),
-    
+
     # ffxi-gamify:
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', 'ffxi.views.index', name='home'),
@@ -26,7 +26,7 @@ urlpatterns = [
     url(r'^record-feats/', 'ffxi.views.record_feats', name='record_feats'),
     url(r'^ub3r1337-rank/', 'ffxi.views.ub3r1337_rank', name='ub3r1337_rank'),
     url(r'^character/(?P<charid>\d+)/(?P<charname>.+)/$', 'ffxi.views.character', name='character'),
-    
+
     # django-email-changer
     url(r'accounts/email/change/activate/(?P<code>[^/]+)/',
         ActivateUserEmailModification.as_view(),
@@ -37,7 +37,7 @@ urlpatterns = [
     url(r'^accounts/email/change/$',
         CreateUserEmailModificationRequest.as_view(),
         name="django_email_changer_change_view"),
-    
+
     # django-registration
     url(r'^accounts/$', RedirectView.as_view(url='/', )),
     # Fix for password reset

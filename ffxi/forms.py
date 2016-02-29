@@ -38,7 +38,7 @@ class DailyTallyForm(forms.ModelForm):
 
         self.helper.layout = Layout(
             Div(
-                'jumpjacks', 'high_knees', 'plank_jumps', 'pushups', 
+                'jumpjacks', 'high_knees', 'plank_jumps', 'pushups',
                 'estimated_exp',
                 css_class=css
             ),
@@ -47,7 +47,7 @@ class DailyTallyForm(forms.ModelForm):
                 css_class=css
             ),
             Div(
-                
+
                 Div(Submit('submit', 'Save', css_class='btn-lg'), css_class='col-sm-4'),
                 css_class='row col-md-12 col-md-offset-10 submit_buttons'
             ),
@@ -81,11 +81,11 @@ class DailyTallyForm(forms.ModelForm):
             'jumpjacks': _('Jumping Jacks'),
             'high_knees': _('High Knees'),
             'plank_jumps': _('Plank Jumps'),
-            
+
             # Upper and Lower Body
             'pushups': _('Push Ups'),
             'squats': _('Squats'),
-            
+
             # Abs
             'climbers': _('Mountain Climbers'),
             'knee_pull_ins': _('Knee Pull-Ins'),
@@ -95,7 +95,7 @@ class DailyTallyForm(forms.ModelForm):
 class LinkAccountForm(forms.Form):
     login = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput())
-    
+
     def __init__(self, *args, **kwargs):
         super(LinkAccountForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
@@ -104,25 +104,25 @@ class LinkAccountForm(forms.Form):
         self.helper.form_action = 'submit_account'
 
         self.helper.add_input(Submit('submit', 'Link Account!', css_class='btn-md pull-right level-submit'))
-    
+
     def is_valid(self):
         valid = super(LinkAccountForm, self).is_valid()
-        
+
         if not valid:
             return valid
-        
+
         # Validate the given DSP account and password
-        q = """SELECT id, login FROM accounts 
+        q = """SELECT id, login FROM accounts
                WHERE password=PASSWORD('{0}')""".format(
                self.cleaned_data['password']
             )
-        account = Accounts.objects.using('darkstar').raw(q) 
+        account = Accounts.objects.using('darkstar').raw(q)
         if len(list(account)) == 0:
             self._errors['invalid_credentials'] = 'Either the account name and/or password are incorrect.'
             return False
-        else: 
+        else:
             self.account = account[0]
- 
+
         return True
 
     def save(self, user, POST):
@@ -132,16 +132,16 @@ class LinkAccountForm(forms.Form):
                 exp = ExperienceStats.objects.get(user=user)
                 exp.exp = exp.exp + 100000
                 exp.save()
-                
+
             linked_account = LinkedAccount(
-                user=user, 
-                acc_id=self.account.id, 
+                user=user,
+                acc_id=self.account.id,
                 name=self.account.login
             )
             linked_account.save()
 
             cursor = connections['darkstar'].cursor()
-            q = """SELECT charid, charname FROM chars 
+            q = """SELECT charid, charname FROM chars
                    WHERE accid={0} LIMIT 1""".format(self.account.id)
             cursor.execute(q)
             character = cursor.fetchone()
@@ -152,15 +152,15 @@ class LinkAccountForm(forms.Form):
         except IntegrityError:
             self._errors['save_failed'] = 'Failed to save the account to the database'
             return [False]
-            
+
 
 
 class CharacterUpgradeForm(forms.Form):
     def get_job_levels(self):
         cursor = connections['darkstar'].cursor()
-        q = """SELECT `war`, `mnk`, `whm`, `blm`, `rdm`, `thf`, `pld`, `drk`, `bst`, 
-                      `brd`, `rng`, `sam`, `nin`, `drg`, `smn`, `blu`, `cor`, `pup`, 
-                      `dnc`, `sch`, `geo`, `run` 
+        q = """SELECT `war`, `mnk`, `whm`, `blm`, `rdm`, `thf`, `pld`, `drk`, `bst`,
+                      `brd`, `rng`, `sam`, `nin`, `drg`, `smn`, `blu`, `cor`, `pup`,
+                      `dnc`, `sch`, `geo`, `run`
                FROM char_jobs WHERE charid={0} LIMIT 1""".format(self.charid)
         cursor.execute(q)
         desc = cursor.description
@@ -168,23 +168,23 @@ class CharacterUpgradeForm(forms.Form):
                 OrderedDict(zip([col[0] for col in desc], row))
                 for row in cursor.fetchall()
         ][0]
-    
-    
+
+
     def get_jobs(self):
         job_levels = self.get_job_levels()
         jobs = []
         for job, level in job_levels.items():
             if int(level) > 0:
                 jobs.append((job, JOB_NAMES[job]))
-        
+
         return jobs
 
     def is_valid(self, user):
         valid = super(CharacterUpgradeForm, self).is_valid()
-        
+
         if not valid:
             return valid
-        
+
         # Validate user has enough EXP to spend
         exp = ExperienceStats.objects.get(user=user)
         self.cleaned_data['char_cost'] = self.cleaned_data['char_cost'].replace(",", "")
@@ -200,22 +200,22 @@ class CharacterUpgradeForm(forms.Form):
             exp = ExperienceStats.objects.get(user=user)
             exp.exp = exp.exp - int(self.cleaned_data['char_cost'])
             exp.save()
-            
+
             # Increase level
             cursor = connections['darkstar'].cursor()
-            q = """UPDATE `char_jobs` SET `{0}`={1} 
+            q = """UPDATE `char_jobs` SET `{0}`={1}
                    WHERE `charid`={2}""".format(
-                   self.cleaned_data['jobs'], 
-                   self.cleaned_data['level'], 
+                   self.cleaned_data['jobs'],
+                   self.cleaned_data['level'],
                    self.charid
             )
             cursor.execute(q)
-            
+
             return exp.exp
         except IntegrityError:
             self._errors['save_failed'] = 'Failed to save the upgrade to the database'
             return False
-            
+
     def __init__(self, *args, **kwargs):
         self.charid = kwargs.pop('charid')
         super(CharacterUpgradeForm, self).__init__(*args, **kwargs)
@@ -224,21 +224,21 @@ class CharacterUpgradeForm(forms.Form):
             choices=self.get_jobs(),
             required = True,
         )
-        
+
         self.fields['level'] = forms.IntegerField(
             label = "Increase Level (Max 75 or Genkai)",
             required = True,
         )
-        
+
         self.fields['start_level'] = forms.IntegerField()
-        
+
         self.fields['char_cost'] = forms.CharField(
             label = "Estimated Cost",
         )
         self.fields['char_exp'] = forms.CharField(
             label = "Remaining EXP",
         )
-        
+
         self.helper = FormHelper()
         self.helper.form_id = 'character-upgrade'
         self.helper.form_class = 'blueForms'
@@ -251,7 +251,7 @@ class CharacterUpgradeForm(forms.Form):
             ),
             Div(
                 FieldWithButtons(
-                    'level', 
+                    'level',
                     StrictButton('-', name='qtyminus', css_class='btn-md btn-info level-down'),
                     StrictButton('+', name='qtyplus', css_class='btn-md btn-info level-up'),
                     css_class="col-sm-6"
@@ -261,22 +261,22 @@ class CharacterUpgradeForm(forms.Form):
                 Field('start_level', type="hidden"),
                 css_class="row"
             ),
-            Div( 
+            Div(
                 Div(
                     Submit('submit', 'Level Up!!', css_class='btn-md pull-right level-submit'
                 ), css_class='col-sm-12'),
                 css_class='row submit_buttons'
             )
         )
-        
+
 
 class EnhancedSignetUpgrade(forms.Form):
     def is_valid(self, user):
         valid = super(EnhancedSignetUpgrade, self).is_valid()
-        
+
         if not valid:
             return valid
-        
+
         # Validate user has enough EXP to spend
         exp = ExperienceStats.objects.get(user=user)
         self.cleaned_data['signet_cost'] = self.cleaned_data['signet_cost'].replace(",", "")
@@ -285,31 +285,31 @@ class EnhancedSignetUpgrade(forms.Form):
             return False
 
         return True
-    
+
     def save(self, user):
         try:
             # Deduct EXP Cost
             exp = ExperienceStats.objects.get(user=user)
             exp.exp = exp.exp - int(self.cleaned_data['signet_cost'])
             exp.save()
-            
+
             # Increase buff level
             cursor = connections['darkstar'].cursor()
             q = """INSERT INTO `char_vars` (`charid`, `varname`, `value`)
                    VALUES ('{0}', '{1}', '{2}')
                    ON DUPLICATE KEY UPDATE `value`={2}""".format(
                    self.charid,
-                   self.cleaned_data['signet'], 
+                   self.cleaned_data['signet'],
                    self.cleaned_data['upgrade']
             )
             cursor.execute(q)
-            
+
 
             return exp.exp
         except IntegrityError:
             self._errors['save_failed'] = 'Failed to save the upgrade to the database'
             return False
-    
+
     def __init__(self, *args, **kwargs):
         self.charid = kwargs.pop('charid')
         super(EnhancedSignetUpgrade, self).__init__(*args, **kwargs)
@@ -318,14 +318,14 @@ class EnhancedSignetUpgrade(forms.Form):
             choices = SIGNET_CHOICES,
             required = True,
         )
-        
+
         self.fields['upgrade'] = forms.IntegerField(
             label = "Buff Level (Max 30)",
             required = True,
         )
-        
+
         self.fields['start_upgrade'] = forms.IntegerField()
-        
+
         self.fields['signet_cost'] = forms.CharField(
             label = "Estimated Cost",
         )
@@ -346,7 +346,7 @@ class EnhancedSignetUpgrade(forms.Form):
             ),
             Div(
                 FieldWithButtons(
-                    'upgrade', 
+                    'upgrade',
                     StrictButton('-', name='qtyminus', css_class='btn-md btn-info buff-down'),
                     StrictButton('+', name='qtyplus', css_class='btn-md btn-info buff-up'),
                     css_class="col-sm-6"
@@ -356,7 +356,7 @@ class EnhancedSignetUpgrade(forms.Form):
                 Field('start_upgrade', type="hidden"),
                 css_class="row"
             ),
-            Div( 
+            Div(
                 Div(
                     Submit('submit', 'Upgrade!', css_class='btn-md pull-right upgrade-submit'
                 ), css_class='col-sm-12'),

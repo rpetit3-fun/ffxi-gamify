@@ -5,6 +5,7 @@ from django.core.management.base import BaseCommand, CommandError
 
 from polutils.models import Titles
 
+
 class Command(BaseCommand):
     help = 'Insert FFXI titles into the database.'
 
@@ -20,7 +21,6 @@ class Command(BaseCommand):
             title_id = fields[0].contents[0]
             title = fields[1].contents[0]
 
-            
             try:
                 title_db, created = Titles.objects.get_or_create(
                     title_id=int(title_id),
@@ -28,5 +28,5 @@ class Command(BaseCommand):
                 )
             except IntegrityError:
                 raise CommandError('Error saving title information')
-            
+
             print title_id, title, created
