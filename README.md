@@ -1,2 +1,2 @@
 # ffxi-gamify
-Django app to work with Darkstar
+Django appto gamify life using FFXI
